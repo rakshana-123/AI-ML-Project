@@ -92,8 +92,14 @@ def main() -> None:
         md += ["", "## Utility check", "",
                f"LLM: {util['llm']} - same 5 notes x 3 questions on original "
                f"vs masked notes; average ROUGE-L F1 between answer pairs: "
-               f"**{util['avg_rouge_l_f1']:.2f}**. Full side-by-side: "
-               "`utility_check.md`.", ""]
+               f"**{util['avg_rouge_l_f1']:.2f}** (raw masked answers) and "
+               f"**{util.get('avg_rouge_l_f1_rehydrated', 0):.2f}** after "
+               f"rehydration restores identifiers. Note a generative LLM "
+               f"phrases two prompts differently even with identical inputs, "
+               f"so word overlap is a floor, not a ceiling - read the "
+               f"side-by-side answers in `utility_check.md` for the "
+               f"qualitative picture (diagnosis/plan content survives; "
+               f"identifier-specific sentences are exactly what changes).", ""]
 
     (RESULTS / "RESULTS.md").write_text("\n".join(md), encoding="utf-8")
     print("wrote results/RESULTS.md")

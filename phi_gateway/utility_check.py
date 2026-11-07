@@ -65,18 +65,26 @@ def main() -> None:
             prompt_mask = f"{q}\n\nNOTE:\n{masked}"
             ans_orig = llm.complete(prompt_orig)
             ans_mask = llm.complete(prompt_mask)
+            # the production experience: restore identifiers before the
+            # clinician reads the answer
+            ans_rehyd = gateway.rehydrate(ans_mask, mapping)
             rows.append({
                 "id": nid, "question": q,
                 "original_answer": ans_orig, "masked_answer": ans_mask,
+                "rehydrated_answer": ans_rehyd,
                 "rouge_l_f1": rouge_l_f1(ans_orig, ans_mask),
+                "rouge_l_f1_rehydrated": rouge_l_f1(ans_orig, ans_rehyd),
                 "n_placeholders": len(mapping),
             })
-            print(f"{nid} Q{qi + 1}: ROUGE-L {rows[-1]['rouge_l_f1']:.2f}")
+            print(f"{nid} Q{qi + 1}: ROUGE-L {rows[-1]['rouge_l_f1']:.2f} "
+                  f"(rehydrated {rows[-1]['rouge_l_f1_rehydrated']:.2f})")
 
     avg = sum(r["rouge_l_f1"] for r in rows) / len(rows)
+    avg_rehyd = sum(r["rouge_l_f1_rehydrated"] for r in rows) / len(rows)
     RESULTS_DIR.mkdir(exist_ok=True)
     (RESULTS_DIR / "utility_check.json").write_text(
-        json.dumps({"llm": llm.name, "avg_rouge_l_f1": avg, "rows": rows},
+        json.dumps({"llm": llm.name, "avg_rouge_l_f1": avg,
+                    "avg_rouge_l_f1_rehydrated": avg_rehyd, "rows": rows},
                    indent=2), encoding="utf-8")
 
     md = [f"# Utility check - LLM answers on original vs masked notes",
@@ -84,20 +92,23 @@ def main() -> None:
           f"LLM: **{llm.name}**  |  notes: {', '.join(PICK_IDS)}  |  "
           f"3 questions each",
           "",
-          f"Average ROUGE-L F1 between answers: **{avg:.2f}** "
-          "(1.0 = identical content)",
+          f"Average ROUGE-L F1 between answers: **{avg:.2f}** (raw masked), "
+          f"**{avg_rehyd:.2f}** after rehydration restores identifiers "
+          "(1.0 = identical content).",
           "",
-          "| Note | Question | ROUGE-L |", "|---|---|---|"]
+          "| Note | Question | ROUGE-L masked | ROUGE-L rehydrated |",
+          "|---|---|---|---|"]
     for r in rows:
         md.append(f"| {r['id']} | {r['question'][:32]}... | "
-                  f"{r['rouge_l_f1']:.2f} |")
+                  f"{r['rouge_l_f1']:.2f} | {r['rouge_l_f1_rehydrated']:.2f} |")
     md.append("")
     for r in rows:
         md += [f"## {r['id']} - {r['question']}", "",
                "**Original:**", "", r["original_answer"], "",
                "**Masked:**", "", r["masked_answer"], ""]
     (RESULTS_DIR / "utility_check.md").write_text("\n".join(md), encoding="utf-8")
-    print(f"avg ROUGE-L F1: {avg:.2f}  ->  results/utility_check.md")
+    print(f"avg ROUGE-L F1: {avg:.2f} masked, {avg_rehyd:.2f} rehydrated"
+          f"  ->  results/utility_check.md")
 
 
 if __name__ == "__main__":

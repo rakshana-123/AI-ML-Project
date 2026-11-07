@@ -57,4 +57,4 @@ Leak rate = share of test notes where at least one gold identifier reached the L
 
 ## Utility check
 
-LLM: mock (offline deterministic) - same 5 notes x 3 questions on original vs masked notes; average ROUGE-L F1 between answer pairs: **0.86**. Full side-by-side: `utility_check.md`.
+LLM: local:Qwen2.5-0.5B-Instruct (CPU) - same 5 notes x 3 questions on original vs masked notes; average ROUGE-L F1 between answer pairs: **0.33** (raw masked answers) and **0.34** after rehydration restores identifiers. Note a generative LLM phrases two prompts differently even with identical inputs, so word overlap is a floor, not a ceiling - read the side-by-side answers in `utility_check.md` for the qualitative picture (diagnosis/plan content survives; identifier-specific sentences are exactly what changes).
