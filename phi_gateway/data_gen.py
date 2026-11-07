@@ -27,17 +27,16 @@ from pathlib import Path
 
 from faker import Faker
 
+from .labels import EPONYM_SURNAMES
+
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 
 # --------------------------------------------------------------------------
 # Pools
 # --------------------------------------------------------------------------
 
-EponYM_SURNAMES = [  # clinicians with these surnames -> disease mentions are O
-    "Parkinson", "Huntington", "Bell", "Crohn", "Graves", "Hodgkin",
-    "Alzheimer", "Lynch", "Addison", "Cushing", "Meniere", "Raynaud",
-    "Turner", "Marfan", "Barrett",
-]
+EponYM_SURNAMES = [s.capitalize() for s in EPONYM_SURNAMES
+                   if s not in ("down",)]  # shared with the masking layer
 EponYM_DISEASES = {
     "Parkinson": ["Parkinson's disease", "Parkinson disease", "PD"],
     "Huntington": ["Huntington's disease", "Huntington disease"],

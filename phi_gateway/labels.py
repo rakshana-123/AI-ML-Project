@@ -51,5 +51,16 @@ ID_TO_LABEL = {i: label for i, label in enumerate(LABEL_LIST)}
 # an inconvenience.
 RULE_TYPES = {"SSN", "PHONE", "EMAIL", "URL", "IP", "DATE", "MRN", "LICENSE"}
 
+# Surnames that are also eponymous disease names.  A standalone occurrence of
+# one of these is far more likely to be the disease ("Parkinson's disease")
+# than the person, so the surname-recall pass only masks them when a title
+# (Dr./Mr./Mrs....) is attached.
+EPONYM_SURNAMES = {
+    "parkinson", "huntington", "bell", "crohn", "graves", "hodgkin",
+    "alzheimer", "lynch", "addison", "cushing", "meniere", "raynaud",
+    "turner", "marfan", "barrett", "down", "kaposi", "hashimoto",
+    "sjogren", "wernicke", "broca",
+}
+
 # Placeholder display names (bracketed in masked text, e.g. [NAME_1]).
 PLACEHOLDER_PREFIX = {t: t for t in ENTITY_TYPES}

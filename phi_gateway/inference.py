@@ -42,13 +42,15 @@ class ModelNER:
         with torch.no_grad():
             for i in range(0, len(windows), batch_size):
                 chunk = windows[i:i + batch_size]
-                batch_ids, batch_mask = [], []
+                batch_ids, batch_mask, lengths = [], [], []
                 for idx in chunk:
-                    ids = [tokens[j] for j in idx]
-                    ids = [self.tokenizer.cls_token_id] + ids + [self.tokenizer.sep_token_id]
+                    ids = [self.tokenizer.cls_token_id] + \
+                          [tokens[j] for j in idx] + \
+                          [self.tokenizer.sep_token_id]
                     batch_ids.append(ids)
                     batch_mask.append([1] * len(ids))
-                maxlen = max(len(x) for x in batch_ids)
+                    lengths.append(len(ids))
+                maxlen = max(lengths)
                 pad = self.tokenizer.pad_token_id
                 batch_ids = [x + [pad] * (maxlen - len(x)) for x in batch_ids]
                 batch_mask = [x + [0] * (maxlen - len(x)) for x in batch_mask]
@@ -56,8 +58,8 @@ class ModelNER:
                     input_ids=torch.tensor(batch_ids, device=self.device),
                     attention_mask=torch.tensor(batch_mask, device=self.device))
                 preds = out.logits.argmax(-1).cpu().tolist()
-                for idx, ids, prd in zip(chunk, batch_ids, preds):
-                    n = len(ids)
+                # decode with each window's TRUE length, not the padded one
+                for idx, n, prd in zip(chunk, lengths, preds):
                     win_offsets = [offsets[j] for j in idx]
                     label_ids = prd[1:n - 1]     # drop CLS/SEP predictions
                     spans = bio_ids_to_spans(text, win_offsets, label_ids,

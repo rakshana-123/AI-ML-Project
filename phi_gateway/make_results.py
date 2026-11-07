@@ -42,15 +42,18 @@ def main() -> None:
           "identifiers.", ""]
 
     if summary:
+        hp = summary.get("hyperparams", {})
+        epochs = hp.get("epochs", hp.get("epochs_completed", "?"))
         md += [f"Model: {summary['base_model']} fine-tuned for "
-               f"{summary['hyperparams']['epochs']} epochs on "
+               f"{epochs} epoch(s) on "
                f"{summary['train_notes']} synthetic notes "
                f"({summary['train_windows']} sliding windows); "
                f"**{summary['total_params']:,} parameters** total "
                f"({summary['trainable_params']:,} trainable); training time "
-               f"{summary['train_seconds']/60:.0f} min on a 12-core CPU. "
+               f"{summary.get('train_seconds', 0)/60:.0f} min on a 12-core CPU. "
                f"Best-epoch dev seqeval F1 "
-               f"(strict IOB2): {summary['dev_seqeval_f1']:.3f}.", ""]
+               f"(strict IOB2): {summary['dev_seqeval_f1']:.3f}. "
+               + summary.get("note", ""), ""]
 
     md += ["## Headline comparison", "",
            "| System | Precision | Recall | F1 | Leak rate |", "|---|---|---|---|---|"]

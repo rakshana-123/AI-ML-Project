@@ -2,25 +2,25 @@
 
 LLM: **mock (offline deterministic)**  |  notes: test_01, test_02, test_05, test_12, test_23  |  3 questions each
 
-Average ROUGE-L F1 between answers: **0.95** (1.0 = identical content)
+Average ROUGE-L F1 between answers: **0.86** (1.0 = identical content)
 
 | Note | Question | ROUGE-L |
 |---|---|---|
-| test_01 | Summarise this clinical note in ... | 0.91 |
-| test_01 | What is the working diagnosis an... | 0.91 |
-| test_01 | What follow-up is arranged and w... | 0.91 |
-| test_02 | Summarise this clinical note in ... | 0.95 |
-| test_02 | What is the working diagnosis an... | 0.95 |
-| test_02 | What follow-up is arranged and w... | 0.95 |
+| test_01 | Summarise this clinical note in ... | 0.64 |
+| test_01 | What is the working diagnosis an... | 0.64 |
+| test_01 | What follow-up is arranged and w... | 0.64 |
+| test_02 | Summarise this clinical note in ... | 0.91 |
+| test_02 | What is the working diagnosis an... | 0.91 |
+| test_02 | What follow-up is arranged and w... | 0.91 |
 | test_05 | Summarise this clinical note in ... | 0.96 |
 | test_05 | What is the working diagnosis an... | 0.96 |
 | test_05 | What follow-up is arranged and w... | 0.96 |
-| test_12 | Summarise this clinical note in ... | 0.99 |
-| test_12 | What is the working diagnosis an... | 0.99 |
-| test_12 | What follow-up is arranged and w... | 0.99 |
-| test_23 | Summarise this clinical note in ... | 0.95 |
-| test_23 | What is the working diagnosis an... | 0.95 |
-| test_23 | What follow-up is arranged and w... | 0.95 |
+| test_12 | Summarise this clinical note in ... | 0.92 |
+| test_12 | What is the working diagnosis an... | 0.92 |
+| test_12 | What follow-up is arranged and w... | 0.92 |
+| test_23 | Summarise this clinical note in ... | 0.84 |
+| test_23 | What is the working diagnosis an... | 0.84 |
+| test_23 | What follow-up is arranged and w... | 0.84 |
 
 ## test_01 - Summarise this clinical note in 3 sentences for a handover.
 
@@ -30,7 +30,9 @@ Summary: Notes similar symptoms last year. Cardiology follow-up 04/21/2025 with 
 
 **Masked:**
 
-Summary: Notes similar symptoms last year. Cardiology follow-up [DATE_3] with Dr.
+Summary: Notes similar symptoms last year. Cardiology follow-up [DATE_3] with [NAME_4][NAME_5]
+at [LOCATION_4]; office [PHONE_1],
+fax [PHONE_2].
 
 ## test_01 - What is the working diagnosis and the key supporting findings?
 
@@ -40,7 +42,9 @@ Summary: Notes similar symptoms last year. Cardiology follow-up 04/21/2025 with 
 
 **Masked:**
 
-Summary: Notes similar symptoms last year. Cardiology follow-up [DATE_3] with Dr.
+Summary: Notes similar symptoms last year. Cardiology follow-up [DATE_3] with [NAME_4][NAME_5]
+at [LOCATION_4]; office [PHONE_1],
+fax [PHONE_2].
 
 ## test_01 - What follow-up is arranged and with whom?
 
@@ -50,7 +54,9 @@ Summary: Notes similar symptoms last year. Cardiology follow-up 04/21/2025 with 
 
 **Masked:**
 
-Summary: Notes similar symptoms last year. Cardiology follow-up [DATE_3] with Dr.
+Summary: Notes similar symptoms last year. Cardiology follow-up [DATE_3] with [NAME_4][NAME_5]
+at [LOCATION_4]; office [PHONE_1],
+fax [PHONE_2].
 
 ## test_02 - Summarise this clinical note in 3 sentences for a handover.
 
@@ -71,7 +77,7 @@ Summary: PROGRESS NOTE - 4 West (Telemetry)
 Hospital day 3
 Date: [DATE_1]
 
-Patient: Robert Fenwick   MRN: [MRN_1]
+Patient: [NAME_1]   MRN: [MRN_1]
 
 S: Patient reports feeling "much better". Sleeping through the night. No
 chest pain since PCI. Ambulating in hall 3 times since this morning.
@@ -95,7 +101,7 @@ Summary: PROGRESS NOTE - 4 West (Telemetry)
 Hospital day 3
 Date: [DATE_1]
 
-Patient: Robert Fenwick   MRN: [MRN_1]
+Patient: [NAME_1]   MRN: [MRN_1]
 
 S: Patient reports feeling "much better". Sleeping through the night. No
 chest pain since PCI. Ambulating in hall 3 times since this morning.
@@ -119,7 +125,7 @@ Summary: PROGRESS NOTE - 4 West (Telemetry)
 Hospital day 3
 Date: [DATE_1]
 
-Patient: Robert Fenwick   MRN: [MRN_1]
+Patient: [NAME_1]   MRN: [MRN_1]
 
 S: Patient reports feeling "much better". Sleeping through the night. No
 chest pain since PCI. Ambulating in hall 3 times since this morning.
@@ -186,13 +192,13 @@ in 8 weeks (02/06/26).
 
 **Masked:**
 
-Summary: Huntington wondered whether this represents early
+Summary: [NAME_9] wondered whether this represents early
 Parkinson disease versus essential tremor. Of note, the family also has a
 history of Huntington disease on the paternal side, and the patient's
-brother Ray Parkinson carries the diagnosis of Huntington's
+brother [NAME_5] carries the diagnosis of Huntington's
 disease, so genetic counseling has been arranged. Assessment: Clinical picture most consistent with idiopathic
-Parkinson's disease (Hoehn & Yahr stage 2). Plan: begin carbidopa/levodopa trial, refer to physical therapy, reassess
-in 8 weeks ([DATE_2]).
+Parkinson's disease [LOCATION_1] & [NAME_6] stage 2). Plan: begin carbidopa/levodopa trial, refer to physical therapy, reassess
+in 8 weeks [DATE_3]).
 
 ## test_12 - What is the working diagnosis and the key supporting findings?
 
@@ -208,13 +214,13 @@ in 8 weeks (02/06/26).
 
 **Masked:**
 
-Summary: Huntington wondered whether this represents early
+Summary: [NAME_9] wondered whether this represents early
 Parkinson disease versus essential tremor. Of note, the family also has a
 history of Huntington disease on the paternal side, and the patient's
-brother Ray Parkinson carries the diagnosis of Huntington's
+brother [NAME_5] carries the diagnosis of Huntington's
 disease, so genetic counseling has been arranged. Assessment: Clinical picture most consistent with idiopathic
-Parkinson's disease (Hoehn & Yahr stage 2). Plan: begin carbidopa/levodopa trial, refer to physical therapy, reassess
-in 8 weeks ([DATE_2]).
+Parkinson's disease [LOCATION_1] & [NAME_6] stage 2). Plan: begin carbidopa/levodopa trial, refer to physical therapy, reassess
+in 8 weeks [DATE_3]).
 
 ## test_12 - What follow-up is arranged and with whom?
 
@@ -230,13 +236,13 @@ in 8 weeks (02/06/26).
 
 **Masked:**
 
-Summary: Huntington wondered whether this represents early
+Summary: [NAME_9] wondered whether this represents early
 Parkinson disease versus essential tremor. Of note, the family also has a
 history of Huntington disease on the paternal side, and the patient's
-brother Ray Parkinson carries the diagnosis of Huntington's
+brother [NAME_5] carries the diagnosis of Huntington's
 disease, so genetic counseling has been arranged. Assessment: Clinical picture most consistent with idiopathic
-Parkinson's disease (Hoehn & Yahr stage 2). Plan: begin carbidopa/levodopa trial, refer to physical therapy, reassess
-in 8 weeks ([DATE_2]).
+Parkinson's disease [LOCATION_1] & [NAME_6] stage 2). Plan: begin carbidopa/levodopa trial, refer to physical therapy, reassess
+in 8 weeks [DATE_3]).
 
 ## test_23 - Summarise this clinical note in 3 sentences for a handover.
 
@@ -249,9 +255,9 @@ says "pronounced see-mon-BAHR") presents for follow-up of hypertension.
 
 **Masked:**
 
-Summary: PRIMARY CARE VISIT - [DATE_1]
+Summary: PRIMARY CARE VISIT [DATE_1] [DATE_2]
 
-Simonbar Sinistaj (that spelling is correct; chart annotation
+[NAME_1] (that spelling is correct; chart annotation
 says "pronounced see-mon-BAHR") presents for follow-up of hypertension.
 
 ## test_23 - What is the working diagnosis and the key supporting findings?
@@ -265,9 +271,9 @@ says "pronounced see-mon-BAHR") presents for follow-up of hypertension.
 
 **Masked:**
 
-Summary: PRIMARY CARE VISIT - [DATE_1]
+Summary: PRIMARY CARE VISIT [DATE_1] [DATE_2]
 
-Simonbar Sinistaj (that spelling is correct; chart annotation
+[NAME_1] (that spelling is correct; chart annotation
 says "pronounced see-mon-BAHR") presents for follow-up of hypertension.
 
 ## test_23 - What follow-up is arranged and with whom?
@@ -281,7 +287,7 @@ says "pronounced see-mon-BAHR") presents for follow-up of hypertension.
 
 **Masked:**
 
-Summary: PRIMARY CARE VISIT - [DATE_1]
+Summary: PRIMARY CARE VISIT [DATE_1] [DATE_2]
 
-Simonbar Sinistaj (that spelling is correct; chart annotation
+[NAME_1] (that spelling is correct; chart annotation
 says "pronounced see-mon-BAHR") presents for follow-up of hypertension.

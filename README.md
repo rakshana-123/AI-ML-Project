@@ -12,7 +12,7 @@ raw note ──deidentify()──> masked note ──> LLM ──> answer ──
 ```
 
 - **Model:** fine-tuned `distilbert-base-cased` token classifier,
-  **{{PARAM_COUNT}} parameters** (exact count from
+  **65,211,675 parameters** (exact count from
   `models/distilbert-phi/training_summary.json`) — far below the 1B cap —
   backed by a deterministic regex rule layer (recall-first hybrid).
 - **Interface:** `deidentify(text) -> (masked_text, mapping)` and
@@ -81,14 +81,19 @@ recall.
 
 <!-- RESULTS_SECTION: filled by hand from results/ after evaluation -->
 
+Training note: the run was stopped after epoch 1 because dev seqeval
+(strict IOB2) F1 had already reached 0.9996 - epochs 2-3 were projected to
+add under 0.001 for ~3 more CPU-hours. The epoch-1 checkpoint is the
+shipped model (`models/distilbert-phi`).
+
 See `results/RESULTS.md` (generated) for full tables. Headlines on the
 25-note hand-labelled test set (414 identifiers):
 
 | System | Precision | **Recall** | F1 | Leak rate |
 |---|---|---|---|---|
-| **PHI Gateway (DistilBERT + rules)** | {{GW_P}} | **{{GW_R}}** | {{GW_F1}} | **{{GW_LEAK}}** |
-| Model only (DistilBERT) | {{MO_P}} | {{MO_R}} | {{MO_F1}} | {{MO_LEAK}} |
-| Rules only | {{RO_P}} | {{RO_R}} | {{RO_F1}} | {{RO_LEAK}} |
+| **PHI Gateway (DistilBERT + rules)** | 0.847 | **0.966** | 0.903 | **4%** |
+| Model only (DistilBERT) | 0.476 | 0.915 | 0.626 | 28% |
+| Rules only | 0.975 | 0.572 | 0.721 | 100% |
 | Microsoft Presidio (baseline) | 0.582 | 0.746 | 0.654 | 88% |
 
 Per-identifier-type precision/recall/F1: `results/RESULTS.md`
@@ -102,9 +107,11 @@ our test notes still leak at least one identifier.
 
 **Utility check** (`results/utility_check.md`): the same 5 notes and 3
 questions answered from original vs masked notes; average ROUGE-L F1
-{{UTILITY}} with the configured LLM. Masking costs some specificity
-(dates/ages become placeholders) but diagnosis and management content
-survive.
+0.86 with the configured LLM. (0.86 with the offline mock LLM;
+re-run `python -m phi_gateway.utility_check` with `GROQ_API_KEY` set for
+real-LLM numbers.) Masking costs some specificity - dates/ages become
+placeholders and name-dependent sentences lose their subject - but
+diagnosis and management content survive.
 
 ## Data
 
@@ -205,5 +212,5 @@ RESEARCH_LOG.md             what was read/tried/decided, in order
 
 Everything is deterministic given the seeds baked into the scripts
 (Faker/`random` seeds 42/1337, Trainer seed 42). On a 12-core CPU:
-data generation ~20 s, training ~2.5 h, full evaluation ~4 min
+data generation ~20 s, training ~100 min (1 epoch; stopped when dev F1 hit 0.9996 - see README results note), full evaluation ~4 min
 (model inference over 25 notes), Presidio baseline ~2 min.

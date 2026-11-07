@@ -90,10 +90,15 @@ GPU (fine-tune Bio_ClinicalBERT on the same data and compare dev recall).
 ## Phase 6 - Training
 
 - HF Trainer, BIO labels, -100 on continuations/specials, sliding windows
-  (384 tokens, stride 64) so long notes train end-to-end, 3 epochs,
-  batch 8, lr 5e-5, seqeval strict/IOB2 dev F1 for model selection.
-- Smoke test first (0.03 epochs) to validate the plumbing end to end on
-  CPU (~7.7 s/step measured; full run ~2.5-3 h).
+  (384 tokens, stride 64) so long notes train end-to-end, batch 8, lr 5e-5,
+  seqeval strict/IOB2 dev F1 for model selection.
+- Smoke test first (0.03 epochs) validated the plumbing (~7.7 s/step).
+- Planned 3 epochs; STOPPED after epoch 1 because dev F1 was already
+  0.9996 - the remaining epochs were ~3 CPU-hours for <0.001 improvement.
+  Salvaged the epoch-1 checkpoint (checkpoint-376) as the final model.
+  On the held-out hand-written test set the model generalises with lower
+  numbers (as it should - different author, different style), which the
+  hybrid rule layer then compensates.
 
 ## Phase 7 - The gateway
 

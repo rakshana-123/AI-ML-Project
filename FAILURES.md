@@ -80,3 +80,39 @@ Written as I went; every real failure that cost time, in order.
     en_core_web_lg download needed a separate step after presidio install;
     `dataloader_num_workers=0` set deliberately to avoid Windows
     multiprocessing hangs in the Trainer.
+
+13. **Padded-batch decoding crash (found only with the trained model).**
+    `inference.py` zipped the *padded* batch ids back against per-window
+    offsets, so decoding a short window in a mixed-length batch ran past
+    its offsets (IndexError). The random-head smoke test missed it because
+    single-window batches pad to their own length. Fix: keep each window's
+    true length and decode with that. Lesson: smoke-test the unhappy path
+    (mixed batch sizes), not just the happy one.
+
+14. **Span-type theft in the merge.** The model's ACCOUNT guess overlapping
+    a rule-detected LICENSE span kept the model's type, because my priority
+    check compared type *sets* instead of which span came from which layer.
+    Result: LICENSE recall 20% despite the rules being perfect on it. Fix:
+    spans carry a `rule` flag; any overlap resolves to the rule layer's
+    type. LICENSE (and ACCOUNT) went back to 100% recall.
+
+15. **Edit ate the `rehydrate` method.** While inserting the surname-recall
+    method, my edit replaced the `def rehydrate(...)` line without
+    re-adding it; its body became unreachable code inside the new method
+    (syntactically valid, silently). Caught by the test suite
+    (`AttributeError: no attribute 'rehydrate'`). Lesson: run the tests
+    after every refactor, before any eval.
+
+16. **Evaluation was blind to the safety nets.** The late-catch and
+    surname passes mask spans in *masked-text* coordinates, but
+    `entity_list` only carried pass-1 original-text spans - so eval under-
+    reported exactly the recall features that had been added (leak rate
+    stuck at 16% while the masked output was actually clean). Fix: a
+    coordinate map (masked char -> original char) so every pass reports
+    spans in original coordinates. Leak rate 16% -> 4% with no behaviour
+    change - the metrics finally described reality.
+
+17. **Model split one name into two spans** ("Dr" + ". Felicity
+    Huntington") and even masked a timestamp ("07:52") as NAME. Fixes:
+    stitch same-label model spans separated only by punctuation, and drop
+    pure-time NAME/LOCATION spans.

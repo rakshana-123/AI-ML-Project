@@ -255,6 +255,33 @@ def find_ips(text: str) -> list[dict]:
     return out
 
 
+# Explicit name clarifications ("first name Austin", "named Denver") and the
+# Washington-DC special case (a city, unlike the state of Washington).
+RX_NAME_CLARIFY = re.compile(
+    r"(?i)\b(?:first|middle|last|given|family|maiden)\s+name\b\s*[:\-]?\s*"
+    r"([A-Z][a-z'\u2019-]{1,20})\b"
+    r"|\bsurname\b\s*[:\-]?\s*([A-Z][a-z'\u2019-]{1,20})\b"
+    r"|\bnamed\s+([A-Z][a-z'\u2019-]{1,20})\b")
+RX_WASHINGTON_DC = re.compile(r"\bWashington\s*,\s*D\.?C\.?\b")
+
+from .labels import EPONYM_SURNAMES  # noqa: E402  (used below)
+
+
+def find_name_clarifications(text: str) -> list[dict]:
+    out = []
+    for m in RX_NAME_CLARIFY.finditer(text):
+        gi = next((i for i, g in enumerate(m.groups(), 1) if g), None)
+        if gi is None:
+            continue
+        if m.group(gi).lower() in EPONYM_SURNAMES:
+            continue            # "named Parkinson" -> the disease
+        out.append({"start": m.start(gi), "end": m.end(gi), "label": "NAME"})
+    for m in RX_WASHINGTON_DC.finditer(text):
+        out.append({"start": m.start(), "end": m.start() + len("Washington"),
+                    "label": "LOCATION"})
+    return out
+
+
 def rule_spans(text: str) -> list[dict]:
     """All rule-layer identifier spans for one note (deduped, sorted)."""
     spans = []
@@ -268,6 +295,7 @@ def rule_spans(text: str) -> list[dict]:
     spans += find_zips(text)
     spans += find_ages(text)
     spans += find_labelled_ids(text)
+    spans += find_name_clarifications(text)
     # drop spans fully contained in an earlier (wider) span of any type,
     # e.g. the sub-match "09/2025" inside "04/09/2025"
     spans.sort(key=lambda s: (s["start"], -s["end"]))
