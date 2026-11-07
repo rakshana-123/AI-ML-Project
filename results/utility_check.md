@@ -2,7 +2,7 @@
 
 LLM: **mock (offline deterministic)**  |  notes: test_01, test_02, test_05, test_12, test_23  |  3 questions each
 
-Average ROUGE-L F1 between answers: **0.86** (1.0 = identical content)
+Average ROUGE-L F1 between answers: **0.87** (1.0 = identical content)
 
 | Note | Question | ROUGE-L |
 |---|---|---|
@@ -18,9 +18,9 @@ Average ROUGE-L F1 between answers: **0.86** (1.0 = identical content)
 | test_12 | Summarise this clinical note in ... | 0.92 |
 | test_12 | What is the working diagnosis an... | 0.92 |
 | test_12 | What follow-up is arranged and w... | 0.92 |
-| test_23 | Summarise this clinical note in ... | 0.84 |
-| test_23 | What is the working diagnosis an... | 0.84 |
-| test_23 | What follow-up is arranged and w... | 0.84 |
+| test_23 | Summarise this clinical note in ... | 0.88 |
+| test_23 | What is the working diagnosis an... | 0.88 |
+| test_23 | What follow-up is arranged and w... | 0.88 |
 
 ## test_01 - Summarise this clinical note in 3 sentences for a handover.
 
@@ -255,7 +255,7 @@ says "pronounced see-mon-BAHR") presents for follow-up of hypertension.
 
 **Masked:**
 
-Summary: PRIMARY CARE VISIT [DATE_1] [DATE_2]
+Summary: PRIMARY CARE VISIT - [DATE_1]
 
 [NAME_1] (that spelling is correct; chart annotation
 says "pronounced see-mon-BAHR") presents for follow-up of hypertension.
@@ -271,7 +271,7 @@ says "pronounced see-mon-BAHR") presents for follow-up of hypertension.
 
 **Masked:**
 
-Summary: PRIMARY CARE VISIT [DATE_1] [DATE_2]
+Summary: PRIMARY CARE VISIT - [DATE_1]
 
 [NAME_1] (that spelling is correct; chart annotation
 says "pronounced see-mon-BAHR") presents for follow-up of hypertension.
@@ -287,7 +287,7 @@ says "pronounced see-mon-BAHR") presents for follow-up of hypertension.
 
 **Masked:**
 
-Summary: PRIMARY CARE VISIT [DATE_1] [DATE_2]
+Summary: PRIMARY CARE VISIT - [DATE_1]
 
 [NAME_1] (that spelling is correct; chart annotation
 says "pronounced see-mon-BAHR") presents for follow-up of hypertension.

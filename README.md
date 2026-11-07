@@ -91,7 +91,7 @@ See `results/RESULTS.md` (generated) for full tables. Headlines on the
 
 | System | Precision | **Recall** | F1 | Leak rate |
 |---|---|---|---|---|
-| **PHI Gateway (DistilBERT + rules)** | 0.847 | **0.966** | 0.903 | **4%** |
+| **PHI Gateway (DistilBERT + rules)** | 0.853 | **0.966** | 0.906 | **4%** |
 | Model only (DistilBERT) | 0.476 | 0.915 | 0.626 | 28% |
 | Rules only | 0.975 | 0.572 | 0.721 | 100% |
 | Microsoft Presidio (baseline) | 0.582 | 0.746 | 0.654 | 88% |
@@ -107,7 +107,7 @@ our test notes still leak at least one identifier.
 
 **Utility check** (`results/utility_check.md`): the same 5 notes and 3
 questions answered from original vs masked notes; average ROUGE-L F1
-0.86 with the configured LLM. (0.86 with the offline mock LLM;
+0.86 with the configured LLM. (0.87 with the offline mock LLM;
 re-run `python -m phi_gateway.utility_check` with `GROQ_API_KEY` set for
 real-LLM numbers.) Masking costs some specificity - dates/ages become
 placeholders and name-dependent sentences lose their subject - but

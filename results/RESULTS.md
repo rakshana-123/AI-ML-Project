@@ -8,7 +8,7 @@ Model: distilbert-base-cased fine-tuned for 1 epoch(s) on 3000 synthetic notes (
 
 | System | Precision | Recall | F1 | Leak rate |
 |---|---|---|---|---|
-| PHI Gateway (DistilBERT + rules) | 0.847 | **0.966** | 0.903 | 4% |
+| PHI Gateway (DistilBERT + rules) | 0.853 | **0.966** | 0.906 | 4% |
 | Model only (DistilBERT) | 0.476 | **0.915** | 0.626 | 28% |
 | Rules only | 0.975 | **0.572** | 0.721 | 100% |
 | Microsoft Presidio (baseline) | 0.582 | **0.746** | 0.654 | 88% |
@@ -21,7 +21,7 @@ Leak rate = share of test notes where at least one gold identifier reached the L
 |---|---|---|---|---|---|---|
 | NAME | 0.781 | **0.992** | 0.874 | 121 | 1 | 34 |
 | LOCATION | 0.712 | **0.852** | 0.776 | 52 | 9 | 21 |
-| DATE | 0.907 | **0.967** | 0.936 | 88 | 3 | 9 |
+| DATE | 0.936 | **0.967** | 0.951 | 88 | 3 | 6 |
 | AGE | 1.000 | **1.000** | 1.000 | 6 | 0 | 0 |
 | PHONE | 0.979 | **0.979** | 0.979 | 47 | 1 | 1 |
 | EMAIL | 0.875 | **1.000** | 0.933 | 14 | 0 | 2 |
@@ -57,4 +57,4 @@ Leak rate = share of test notes where at least one gold identifier reached the L
 
 ## Utility check
 
-LLM: mock (offline deterministic) - same 5 notes x 3 questions on original vs masked notes; average ROUGE-L F1 between answer pairs: **0.95**. Full side-by-side: `utility_check.md`.
+LLM: mock (offline deterministic) - same 5 notes x 3 questions on original vs masked notes; average ROUGE-L F1 between answer pairs: **0.86**. Full side-by-side: `utility_check.md`.

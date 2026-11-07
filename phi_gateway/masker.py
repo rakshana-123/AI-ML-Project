@@ -54,11 +54,17 @@ def merge_spans(spans: list[dict], text: str | None = None) -> list[dict]:
     ("Dr" + ". Felicity Huntington") are stitched back together.
     """
     spans = [s for s in spans if s["end"] > s["start"]]
-    # model quirk: pure times are never identifiers
     if text is not None:
-        spans = [s for s in spans
-                 if not (s["label"] in ("NAME", "LOCATION")
-                         and TIME_LIKE.match(text[s["start"]:s["end"]]))]
+        # model quirks: pure times and punctuation-only spans are never
+        # identifiers ("07:52" as NAME, "-" as DATE)
+        def _keep(s: dict) -> bool:
+            value = text[s["start"]:s["end"]]
+            if s["label"] in ("NAME", "LOCATION") and TIME_LIKE.match(value):
+                return False
+            if s["label"] != "AGE" and not any(c.isalnum() for c in value):
+                return False
+            return True
+        spans = [s for s in spans if _keep(s)]
     spans.sort(key=lambda s: (s["start"], -s["end"]))
     merged: list[dict] = []
     for s in spans:

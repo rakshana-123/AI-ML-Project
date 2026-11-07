@@ -1,6 +1,6 @@
 {
   "llm": "mock (offline deterministic)",
-  "avg_rouge_l_f1": 0.8557642975217306,
+  "avg_rouge_l_f1": 0.8650666231031259,
   "rows": [
     {
       "id": "test_01",
@@ -102,25 +102,25 @@
       "id": "test_23",
       "question": "Summarise this clinical note in 3 sentences for a handover.",
       "original_answer": "Summary: PRIMARY CARE VISIT - 10/10/2025\n\nSimonbar Sinistaj (that spelling is correct; chart annotation\nsays \"pronounced see-mon-BAHR\") presents for follow-up of hypertension.",
-      "masked_answer": "Summary: PRIMARY CARE VISIT [DATE_1] [DATE_2]\n\n[NAME_1] (that spelling is correct; chart annotation\nsays \"pronounced see-mon-BAHR\") presents for follow-up of hypertension.",
-      "rouge_l_f1": 0.8372093023255814,
-      "n_placeholders": 10
+      "masked_answer": "Summary: PRIMARY CARE VISIT - [DATE_1]\n\n[NAME_1] (that spelling is correct; chart annotation\nsays \"pronounced see-mon-BAHR\") presents for follow-up of hypertension.",
+      "rouge_l_f1": 0.8837209302325582,
+      "n_placeholders": 9
     },
     {
       "id": "test_23",
       "question": "What is the working diagnosis and the key supporting findings?",
       "original_answer": "Summary: PRIMARY CARE VISIT - 10/10/2025\n\nSimonbar Sinistaj (that spelling is correct; chart annotation\nsays \"pronounced see-mon-BAHR\") presents for follow-up of hypertension.",
-      "masked_answer": "Summary: PRIMARY CARE VISIT [DATE_1] [DATE_2]\n\n[NAME_1] (that spelling is correct; chart annotation\nsays \"pronounced see-mon-BAHR\") presents for follow-up of hypertension.",
-      "rouge_l_f1": 0.8372093023255814,
-      "n_placeholders": 10
+      "masked_answer": "Summary: PRIMARY CARE VISIT - [DATE_1]\n\n[NAME_1] (that spelling is correct; chart annotation\nsays \"pronounced see-mon-BAHR\") presents for follow-up of hypertension.",
+      "rouge_l_f1": 0.8837209302325582,
+      "n_placeholders": 9
     },
     {
       "id": "test_23",
       "question": "What follow-up is arranged and with whom?",
       "original_answer": "Summary: PRIMARY CARE VISIT - 10/10/2025\n\nSimonbar Sinistaj (that spelling is correct; chart annotation\nsays \"pronounced see-mon-BAHR\") presents for follow-up of hypertension.",
-      "masked_answer": "Summary: PRIMARY CARE VISIT [DATE_1] [DATE_2]\n\n[NAME_1] (that spelling is correct; chart annotation\nsays \"pronounced see-mon-BAHR\") presents for follow-up of hypertension.",
-      "rouge_l_f1": 0.8372093023255814,
-      "n_placeholders": 10
+      "masked_answer": "Summary: PRIMARY CARE VISIT - [DATE_1]\n\n[NAME_1] (that spelling is correct; chart annotation\nsays \"pronounced see-mon-BAHR\") presents for follow-up of hypertension.",
+      "rouge_l_f1": 0.8837209302325582,
+      "n_placeholders": 9
     }
   ]
 }
