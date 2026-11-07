@@ -23,8 +23,14 @@ raw note ──deidentify()──> masked note ──> LLM ──> answer ──
 
 ```bash
 pip install -r requirements.txt
-python demo.py                    # end-to-end: mask -> LLM -> restore
+python demo.py                    # end-to-end in the terminal: mask -> LLM -> restore
+python -m streamlit run app.py    # OR the web preview UI -> http://localhost:8501
 ```
+
+The web preview (`app.py`) shows the full flow interactively: paste a note,
+click **Deidentify** to see the masked text and the private mapping table,
+then **Ask the LLM** to see the raw answer (placeholders only) side by side
+with the rehydrated answer (identifiers restored).
 
 The demo runs fully offline if no LLM key is configured: it falls back to a
 **real local LLM** — Qwen2.5-0.5B-Instruct (Apache-2.0, ~0.5B params) running

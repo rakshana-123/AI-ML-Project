@@ -8,3 +8,4 @@ spacy>=3.7
 accelerate>=0.30
 pandas>=2.0
 requests>=2.31
+streamlit>=1.30
