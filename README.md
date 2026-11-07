@@ -26,14 +26,18 @@ pip install -r requirements.txt
 python demo.py                    # end-to-end: mask -> LLM -> restore
 ```
 
-The demo runs fully offline if no LLM key is configured (it falls back to a
-deterministic mock so the pipeline always works — the demo says which
-provider is in use). To use a real LLM in the round trip:
+The demo runs fully offline if no LLM key is configured: it falls back to a
+**real local LLM** — Qwen2.5-0.5B-Instruct (Apache-2.0, ~0.5B params) running
+on CPU via transformers (one-time ~1 GB download, then no network needed;
+~4-5 tokens/s on a 12-core CPU, streamed live in the terminal). If even that
+is unavailable it degrades to a deterministic mock. For a snappier demo, set
+a key and the gateway uses it instead:
 
 ```bash
 set GROQ_API_KEY=gsk_...                 # free tier, or:
 set OPENAI_API_KEY=sk-...                # any OpenAI-compatible endpoint
 set OLLAMA_MODEL=llama3.2                # or run Ollama locally
+set LOCAL_LLM_ID=Qwen/Qwen2.5-1.5B-Instruct   # bigger local model
 ```
 
 Other entry points:
@@ -41,7 +45,7 @@ Other entry points:
 ```bash
 python -m phi_gateway.data_gen           # regenerate synthetic train/dev data
 python -m phi_gateway.build_testset      # rebuild the hand-labelled test set
-python -m phi_gateway.train              # fine-tune the model (~2.5 h, CPU)
+python -m phi_gateway.train              # fine-tune the model (~100 min, CPU, 1 epoch)
 python -m phi_gateway.presidio_baseline  # run the Presidio comparison
 python -m phi_gateway.evaluate --all     # full metric tables -> results/
 python -m phi_gateway.utility_check      # 5 original vs 5 masked LLM answers

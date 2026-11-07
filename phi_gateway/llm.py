@@ -1,10 +1,13 @@
-"""LLM client for the round trip, with an offline deterministic fallback.
+"""LLM client for the round trip, with a real offline local option.
 
 Provider priority (first available wins):
   1. Groq free tier      - set GROQ_API_KEY       (model GROQ_MODEL or llama-3.3-70b-versatile)
   2. any OpenAI-compatible endpoint - set OPENAI_API_KEY (+ OPENAI_BASE_URL)
   3. local Ollama        - running at http://localhost:11434 (model OLLAMA_MODEL or llama3.2)
-  4. MockLLM             - deterministic extractive summariser, no network
+  4. local HF model      - Qwen2.5-0.5B-Instruct (default; override with
+                           LOCAL_LLM_ID), runs on CPU, no network after the
+                           one-time download.  Set PHI_NO_LOCAL_LLM=1 to skip.
+  5. MockLLM             - deterministic extractive summariser, no network
 
 The mapping is never part of the prompt - callers only pass the masked note.
 """
@@ -28,7 +31,7 @@ class MockLLM:
 
     name = "mock (offline deterministic)"
 
-    def complete(self, prompt: str, max_sentences: int = 4) -> str:
+    def complete(self, prompt: str, max_sentences: int = 4, **kw) -> str:
         note = prompt.split("NOTE:", 1)[-1]
         sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", note)
                      if s.strip()]
@@ -80,6 +83,51 @@ class _OllamaLLM:
         return r.json()["message"]["content"]
 
 
+class LocalHFLLM:
+    """A real open-weights LLM running locally on CPU via transformers.
+
+    Default: Qwen2.5-0.5B-Instruct (~0.5B params, Apache-2.0).  Small enough
+    to generate 3-4 sentence answers in seconds on a 12-core CPU, good
+    enough at instruction following for the round-trip demo, and it needs
+    no API key and no network after the one-time download.  Greedy decoding
+    keeps answers deterministic across demo runs.
+    """
+
+    def __init__(self, model_id: str | None = None, max_new_tokens: int | None = None):
+        import torch
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+        self.torch = torch
+        self.model_id = model_id or os.environ.get(
+            "LOCAL_LLM_ID", "Qwen/Qwen2.5-0.5B-Instruct")
+        self.max_new_tokens = max_new_tokens or int(
+            os.environ.get("PHI_LOCAL_LLM_MAX_TOKENS", "160"))
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_id)
+        self.model = AutoModelForCausalLM.from_pretrained(self.model_id)
+        self.model.eval()
+        self.name = f"local:{self.model_id.split('/')[-1]} (CPU)"
+
+    def complete(self, prompt: str, stream: bool = False, **kw) -> str:
+        torch = self.torch
+        import sys
+        from transformers import TextStreamer
+        messages = [{"role": "user", "content": prompt}]
+        enc = self.tokenizer.apply_chat_template(
+            messages, add_generation_prompt=True, return_tensors="pt",
+            return_dict=True)
+        streamer = TextStreamer(self.tokenizer, skip_prompt=True,
+                                skip_special_tokens=True) if stream else None
+        with torch.no_grad():
+            out = self.model.generate(
+                **enc,
+                max_new_tokens=self.max_new_tokens, do_sample=False,
+                temperature=None, top_p=None, top_k=None,
+                pad_token_id=self.tokenizer.eos_token_id,
+                streamer=streamer)
+        text = self.tokenizer.decode(out[0][enc["input_ids"].shape[1]:],
+                                     skip_special_tokens=True)
+        return text.strip()
+
+
 def get_llm():
     """Return the best available LLM client (never raises)."""
     key = os.environ.get("GROQ_API_KEY")
@@ -101,4 +149,10 @@ def get_llm():
             return _OllamaLLM(model or models[0])
     except requests.RequestException:
         pass
+    if not os.environ.get("PHI_NO_LOCAL_LLM"):
+        try:
+            return LocalHFLLM()
+        except Exception as exc:      # no network / no disk - degrade quietly
+            print(f"[llm] local model unavailable ({type(exc).__name__}: "
+                  f"{exc}); falling back to offline mock")
     return MockLLM()

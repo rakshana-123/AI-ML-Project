@@ -1,8 +1,11 @@
 # Demo video script (<= 5 minutes)
 
 Setup before recording: `pip install -r requirements.txt`, model trained
-(`models/distilbert-phi` exists), optional `set GROQ_API_KEY=...` for a real
-LLM (otherwise the demo runs on the offline fallback - say so on camera).
+(`models/distilbert-phi` exists). The round-trip LLM needs NO API key: the
+demo automatically uses a local Qwen2.5-0.5B-Instruct on CPU (first run
+downloads ~1 GB once; answers stream live in the terminal at ~4-5 tok/s).
+Optional `set GROQ_API_KEY=...` for instant cloud answers instead - say on
+camera which provider is running (the demo prints it).
 
 | Time | What to show | Command / action |
 |---|---|---|

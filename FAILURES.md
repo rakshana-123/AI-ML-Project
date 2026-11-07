@@ -116,3 +116,14 @@ Written as I went; every real failure that cost time, in order.
     Huntington") and even masked a timestamp ("07:52") as NAME. Fixes:
     stitch same-label model spans separated only by punctuation, and drop
     pure-time NAME/LOCATION spans.
+
+18. **transformers 5: `apply_chat_template` returns a BatchEncoding.**
+    The local-LLM path crashed with `ones_like(): argument 'input' must be
+    Tensor, not BatchEncoding` - v5 returns a dict even with
+    `return_tensors="pt"`. Fix: `return_dict=True` and generate with
+    `**enc`, slicing output by `enc["input_ids"].shape[1]`.
+
+19. **bfloat16 was SLOWER than fp32 on this CPU.** Assumed BF16 weights
+    would speed the local LLM up; measured 3.1 vs 4.6 tok/s - the CPU has
+    no native BF16 path, so it emulates. Benchmark before believing.
+    fp32 + capped tokens + live streaming is the demo configuration.

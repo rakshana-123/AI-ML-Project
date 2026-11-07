@@ -56,8 +56,11 @@ def run_once(gateway: PHIGateway, llm, note_text: str) -> None:
     print("=" * 78)
     print(f"LLM ({llm.name}) receives ONLY the masked note")
     print("=" * 78)
-    response = llm.complete(QUESTION + masked)
-    print(response)
+    try:
+        response = llm.complete(QUESTION + masked, stream=True)
+    except TypeError:                       # provider without streaming
+        response = llm.complete(QUESTION + masked)
+        print(response)
 
     restored = gateway.rehydrate(response, mapping)
     unknowns = gateway.last_report.get("unknown_placeholders", [])

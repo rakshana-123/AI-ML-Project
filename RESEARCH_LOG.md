@@ -111,8 +111,15 @@ GPU (fine-tune Bio_ClinicalBERT on the same data and compare dev recall).
 - Rehydration replaces placeholders back; unknown placeholders returned by
   the LLM are left untouched (no data risk) and reported.
 
-## Phase 8 - Utility + demo
+## Phase 8 - Utility + demo + the round-trip LLM
 
 - Same 5 notes, 3 questions, asked twice (original vs masked); ROUGE-L F1
-  between answer pairs. Offline MockLLM fallback so the pipeline always
-  runs; set GROQ_API_KEY for real numbers.
+  between answer pairs.
+- Round-trip LLM provider chain built in `llm.py`: Groq -> any
+  OpenAI-compatible endpoint -> local Ollama -> a REAL local open-weights
+  model -> deterministic mock. Chose Qwen2.5-0.5B-Instruct (Apache-2.0,
+  ~0.5B) as the no-API-key default: benchmarked fp32 vs bfloat16 on this
+  CPU (4.6 vs 3.1 tok/s - no native BF16 here, so fp32), capped generation
+  at 160 tokens and added live token streaming so the interview demo shows
+  progress instead of 30 s of silence. transformers 5 gotcha logged in
+  FAILURES.md: apply_chat_template returns a BatchEncoding, not a tensor.
