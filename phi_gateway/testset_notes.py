@@ -18,7 +18,7 @@ TEST_NOTES = [
 """WEXFORD MEMORIAL HOSPITAL
 Internal Medicine - Admission History & Physical
 
-Visit date: 04/09/2025
+Visit date: [[DATE::04/09/2025]]
 Name: [[NAME::Gloria M. Castellanos]]    MR: [[MRN::77-40219]]
 DOB: [[DATE::July 23, 1951]]    Sex: F    PCP: [[NAME::Dr. Erin Wallace]]
 
