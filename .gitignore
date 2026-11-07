@@ -1,0 +1,18 @@
+# Model weights are large; train locally with `python -m phi_gateway.train`
+models/
+# Caches and build artefacts
+__pycache__/
+*.pyc
+.pycache/
+*.egg-info/
+# Environment
+.venv/
+venv/
+env/
+# Tooling
+.DS_Store
+Thumbs.db
+# Not part of the submission
+*.pdf
+# HF / presidio caches if run in-repo
+.cache/
