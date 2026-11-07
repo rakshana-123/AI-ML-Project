@@ -1,0 +1,494 @@
+{
+  "presidio": {
+    "system": "presidio",
+    "n_notes": 25,
+    "micro": {
+      "precision": 0.5819209039548022,
+      "recall": 0.7463768115942029,
+      "f1": 0.653968253968254
+    },
+    "per_type": {
+      "NAME": {
+        "precision": 0.875968992248062,
+        "recall": 0.9262295081967213,
+        "f1": 0.9003984063745021,
+        "tp": 113,
+        "fp": 16,
+        "fn": 9
+      },
+      "LOCATION": {
+        "precision": 0.3,
+        "recall": 0.2459016393442623,
+        "f1": 0.2702702702702703,
+        "tp": 15,
+        "fp": 35,
+        "fn": 46
+      },
+      "DATE": {
+        "precision": 0.43564356435643564,
+        "recall": 0.967032967032967,
+        "f1": 0.6006825938566553,
+        "tp": 88,
+        "fp": 114,
+        "fn": 3
+      },
+      "AGE": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 6
+      },
+      "PHONE": {
+        "precision": 0.8545454545454545,
+        "recall": 0.9791666666666666,
+        "f1": 0.912621359223301,
+        "tp": 47,
+        "fp": 8,
+        "fn": 1
+      },
+      "EMAIL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 14,
+        "fp": 0,
+        "fn": 0
+      },
+      "SSN": {
+        "precision": 0.42857142857142855,
+        "recall": 1.0,
+        "f1": 0.6,
+        "tp": 3,
+        "fp": 4,
+        "fn": 0
+      },
+      "MRN": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 14
+      },
+      "HEALTHPLAN": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 6
+      },
+      "ACCOUNT": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 18
+      },
+      "LICENSE": {
+        "precision": 0.10344827586206896,
+        "recall": 0.6,
+        "f1": 0.17647058823529413,
+        "tp": 3,
+        "fp": 26,
+        "fn": 2
+      },
+      "URL": {
+        "precision": 0.4722222222222222,
+        "recall": 1.0,
+        "f1": 0.6415094339622641,
+        "tp": 17,
+        "fp": 19,
+        "fn": 0
+      },
+      "IP": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 9,
+        "fp": 0,
+        "fn": 0
+      }
+    },
+    "leak_rate": 0.88,
+    "leaked_notes": [
+      {
+        "id": "test_01",
+        "entities": [
+          {
+            "label": "MRN",
+            "value": "77-40219"
+          },
+          {
+            "label": "LOCATION",
+            "value": "118 Bonnyview Road, Apt 9C"
+          },
+          {
+            "label": "LOCATION",
+            "value": "Wexford Heart Institute"
+          }
+        ]
+      },
+      {
+        "id": "test_02",
+        "entities": [
+          {
+            "label": "ACCOUNT",
+            "value": "L-99284-33"
+          }
+        ]
+      },
+      {
+        "id": "test_03",
+        "entities": [
+          {
+            "label": "LOCATION",
+            "value": "Brightwater Family Practice"
+          },
+          {
+            "label": "LOCATION",
+            "value": "402 Kestrel Lane, Suite 210"
+          },
+          {
+            "label": "ACCOUNT",
+            "value": "99310-447"
+          }
+        ]
+      },
+      {
+        "id": "test_04",
+        "entities": [
+          {
+            "label": "LOCATION",
+            "value": "Northfield Orthopaedic Associates"
+          },
+          {
+            "label": "LOCATION",
+            "value": "88 Cadogan Court, Building C"
+          },
+          {
+            "label": "LOCATION",
+            "value": "05760"
+          },
+          {
+            "label": "MRN",
+            "value": "447-0291"
+          }
+        ]
+      },
+      {
+        "id": "test_05",
+        "entities": [
+          {
+            "label": "LOCATION",
+            "value": "Cascade Valley Imaging Center"
+          }
+        ]
+      },
+      {
+        "id": "test_07",
+        "entities": [
+          {
+            "label": "LOCATION",
+            "value": "Sunrise Assisted\nLiving of Dutton County"
+          }
+        ]
+      },
+      {
+        "id": "test_08",
+        "entities": [
+          {
+            "label": "LOCATION",
+            "value": "Greenfield Pharmacy on\nMulberry Street"
+          },
+          {
+            "label": "NAME",
+            "value": "I. Uzoma"
+          }
+        ]
+      },
+      {
+        "id": "test_09",
+        "entities": [
+          {
+            "label": "DATE",
+            "value": "2025.05.14"
+          },
+          {
+            "label": "LOCATION",
+            "value": "Saint Aurelia Surgical Pavilion"
+          },
+          {
+            "label": "ACCOUNT",
+            "value": "OR-5566-4421"
+          }
+        ]
+      },
+      {
+        "id": "test_10",
+        "entities": [
+          {
+            "label": "LOCATION",
+            "value": "Harrowgate Laboratories, plc"
+          },
+          {
+            "label": "ACCOUNT",
+            "value": "77-2091-44"
+          }
+        ]
+      },
+      {
+        "id": "test_11",
+        "entities": [
+          {
+            "label": "LOCATION",
+            "value": "Lakeshore Health System"
+          },
+          {
+            "label": "ACCOUNT",
+            "value": "4400-918-72"
+          },
+          {
+            "label": "LOCATION",
+            "value": "74 Windward Passage"
+          },
+          {
+            "label": "LOCATION",
+            "value": "04631"
+          },
+          {
+            "label": "ACCOUNT",
+            "value": "G-1174"
+          }
+        ]
+      },
+      {
+        "id": "test_12",
+        "entities": [
+          {
+            "label": "NAME",
+            "value": "Olive Parkinson"
+          }
+        ]
+      },
+      {
+        "id": "test_13",
+        "entities": [
+          {
+            "label": "MRN",
+            "value": "D-99-44021"
+          }
+        ]
+      },
+      {
+        "id": "test_14",
+        "entities": [
+          {
+            "label": "LOCATION",
+            "value": "Foxglove Manor Nursing Home"
+          },
+          {
+            "label": "LOCATION",
+            "value": "12 Thistle\n   Way"
+          }
+        ]
+      },
+      {
+        "id": "test_15",
+        "entities": [
+          {
+            "label": "NAME",
+            "value": "D. SMYTHE"
+          },
+          {
+            "label": "DATE",
+            "value": "29.Oct.2025"
+          },
+          {
+            "label": "ACCOUNT",
+            "value": "IR-2025-77314"
+          }
+        ]
+      },
+      {
+        "id": "test_16",
+        "entities": [
+          {
+            "label": "MRN",
+            "value": "AC-77-2291"
+          },
+          {
+            "label": "LOCATION",
+            "value": "Corner Druggist, 5 Elm Row"
+          }
+        ]
+      },
+      {
+        "id": "test_17",
+        "entities": [
+          {
+            "label": "LOCATION",
+            "value": "Chest Medicine of the\nRiverbend"
+          },
+          {
+            "label": "LOCATION",
+            "value": "Riverbend University\nHospital"
+          },
+          {
+            "label": "LOCATION",
+            "value": "3211 Riverbend Parkway, Floor 4"
+          },
+          {
+            "label": "NAME",
+            "value": "B. Toft"
+          },
+          {
+            "label": "ACCOUNT",
+            "value": "D-2601-33097"
+          }
+        ]
+      },
+      {
+        "id": "test_18",
+        "entities": [
+          {
+            "label": "ACCOUNT",
+            "value": "CT-772-019"
+          },
+          {
+            "label": "LOCATION",
+            "value": "1200 Independence Ave SE"
+          },
+          {
+            "label": "LOCATION",
+            "value": "Capitol Hill Dental Group"
+          },
+          {
+            "label": "LOCATION",
+            "value": "Northeast Market"
+          },
+          {
+            "label": "LOCATION",
+            "value": "1400 H Street NE"
+          },
+          {
+            "label": "LOCATION",
+            "value": "Anacostia Park"
+          },
+          {
+            "label": "LOCATION",
+            "value": "Union Station"
+          },
+          {
+            "label": "LOCATION",
+            "value": "409 C Street SW"
+          }
+        ]
+      },
+      {
+        "id": "test_19",
+        "entities": [
+          {
+            "label": "MRN",
+            "value": "HOT-99126"
+          },
+          {
+            "label": "PHONE",
+            "value": "+1-555-017-9089"
+          },
+          {
+            "label": "LOCATION",
+            "value": "Verdant & Vine Flowers, 902 Longview Ave"
+          }
+        ]
+      },
+      {
+        "id": "test_21",
+        "entities": [
+          {
+            "label": "HEALTHPLAN",
+            "value": "EHF-3355-8890"
+          },
+          {
+            "label": "ACCOUNT",
+            "value": "SE-77"
+          },
+          {
+            "label": "LOCATION",
+            "value": "909 Madison Avenue"
+          }
+        ]
+      },
+      {
+        "id": "test_23",
+        "entities": [
+          {
+            "label": "LOCATION",
+            "value": "Stapid Pharmacy"
+          }
+        ]
+      },
+      {
+        "id": "test_24",
+        "entities": [
+          {
+            "label": "LICENSE",
+            "value": "V-9082-114-K"
+          },
+          {
+            "label": "MRN",
+            "value": "Z-44-991-2"
+          },
+          {
+            "label": "LOCATION",
+            "value": "Blackwater & Sons Machine Shop"
+          },
+          {
+            "label": "LOCATION",
+            "value": "31 Quarry Road"
+          },
+          {
+            "label": "ACCOUNT",
+            "value": "SM-772-9014"
+          },
+          {
+            "label": "HEALTHPLAN",
+            "value": "NHP 889-4471-02"
+          }
+        ]
+      },
+      {
+        "id": "test_25",
+        "entities": [
+          {
+            "label": "MRN",
+            "value": "KP-77-402-9"
+          },
+          {
+            "label": "LOCATION",
+            "value": "22 Pilgrim Court,\nUnit 2"
+          },
+          {
+            "label": "NAME",
+            "value": "Deb Zero"
+          },
+          {
+            "label": "HEALTHPLAN",
+            "value": "EX-99-441-72"
+          },
+          {
+            "label": "LOCATION",
+            "value": "Pilgrim Court Assisted Living"
+          },
+          {
+            "label": "ACCOUNT",
+            "value": "CONF-2026-0317-9"
+          }
+        ]
+      }
+    ]
+  }
+}

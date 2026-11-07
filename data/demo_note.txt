@@ -1,0 +1,19 @@
+IRONGATE REGIONAL MEDICAL CENTER - Hospitalist Service
+Admission note - [[DATE::10/28/2026]]
+
+Patient: [[NAME::Bernadette Kowalski-Voss]]    MRN: [[MRN::IG-447-2091]]
+DOB: [[DATE::03/17/1931]]    PCP: [[NAME::Dr. Anneke Visser]]
+
+History: 95-year-old female transferred from [[LOCATION:Irongate Nursing and
+Rehab]], [[LOCATION:44 Millrace Road]], after a witnessed fall 2 days ago.
+Daughter [[NAME::Rosa Kowalski]] reports declining oral intake since last week.
+
+Assessment: Hip contusion without fracture; early pneumonia treated with
+ceftriaxone. Delirium screen positive, likely multifactorial.
+
+Plan: continue antibiotics, physical therapy twice daily, fall precautions.
+Family meeting scheduled [[DATE::11/02/2026]]; contact daughter at
+[[PHONE:555-014-8829]] or email [[EMAIL:r.kowalski@example-mail.com]].
+Results portal: [[URL:portal.irongate-example.org]].
+
+Electronically signed by [[NAME::Dr. Owen Masterson]], MD on [[DATE::28 Oct 2026]].
