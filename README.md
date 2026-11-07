@@ -110,12 +110,15 @@ zero on the >89 age rule, and it misses most sub-state locations — 88% of
 our test notes still leak at least one identifier.
 
 **Utility check** (`results/utility_check.md`): the same 5 notes and 3
-questions answered from original vs masked notes; average ROUGE-L F1
-0.86 with the configured LLM. (0.87 with the offline mock LLM;
-re-run `python -m phi_gateway.utility_check` with `GROQ_API_KEY` set for
-real-LLM numbers.) Masking costs some specificity - dates/ages become
-placeholders and name-dependent sentences lose their subject - but
-diagnosis and management content survive.
+questions answered from original vs masked notes with the local
+Qwen2.5-0.5B LLM; average ROUGE-L F1 between answer pairs **0.33**
+(**0.34** after rehydration restores identifiers). Interpretation: a
+generative model phrases any two prompts differently, so word overlap is
+a floor, not a ceiling — reading the side-by-side answers shows
+diagnosis, findings and plan content surviving intact, while exactly the
+identifier-dependent sentences change (by design). Re-run
+`python -m phi_gateway.utility_check` with `GROQ_API_KEY` set for a
+stronger LLM; expect the overlap to rise.
 
 ## Data
 
