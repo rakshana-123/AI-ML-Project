@@ -14,21 +14,21 @@
   }
   body.light { --bg:#f3f6fb; --panel:#ffffff; --panel2:#f6f8fc; --line:#e2e8f0; --ink:#0f172a; --muted:#64748b; }
   * { box-sizing:border-box; margin:0; }
-  body { font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--ink); display:flex; min-height:100vh; }
-  /* sidebar */
-  aside { width:236px; background:var(--panel); border-right:1px solid var(--line); padding:20px 14px; position:sticky; top:0; height:100vh; display:flex; flex-direction:column; gap:6px; flex-shrink:0; }
-  .brand { display:flex; gap:10px; align-items:center; padding:4px 8px 18px; }
-  .brand .logo { width:38px; height:38px; border-radius:11px; background:linear-gradient(135deg,var(--brand),var(--brand2)); display:grid; place-items:center; font-size:20px; }
-  .brand b { font-size:14.5px; display:block; } .brand span { font-size:11px; color:var(--muted); }
-  nav a { display:flex; gap:11px; align-items:center; padding:10px 12px; border-radius:10px; color:var(--muted); font-size:13.5px; font-weight:600; cursor:pointer; user-select:none; }
-  nav a:hover { background:var(--panel2); color:var(--ink); }
-  nav a.active { background:linear-gradient(90deg,rgba(45,212,191,.16),rgba(56,189,248,.06)); color:var(--brand); }
-  nav a i { font-style:normal; width:18px; text-align:center; }
-  .side-foot { margin-top:auto; font-size:11.5px; color:var(--muted); display:grid; gap:8px; }
-  .pill { display:flex; align-items:center; gap:7px; background:var(--panel2); border:1px solid var(--line); padding:8px 10px; border-radius:9px; }
+  body { font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--ink); min-height:100vh; }
+  /* top navbar */
+  header.topbar { position:sticky; top:0; z-index:10; background:var(--panel); border-bottom:1px solid var(--line); display:flex; align-items:center; gap:28px; padding:0 32px; height:60px; }
+  .brand { display:flex; gap:10px; align-items:center; }
+  .brand .logo { width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--brand),var(--brand2)); display:grid; place-items:center; font-size:18px; }
+  .brand b { font-size:14.5px; display:block; line-height:1.1; } .brand span { font-size:11px; color:var(--muted); }
+  nav { display:flex; gap:4px; height:100%; }
+  nav a { display:flex; align-items:center; padding:0 16px; color:var(--muted); font-size:13.5px; font-weight:600; cursor:pointer; user-select:none; border-bottom:2px solid transparent; }
+  nav a:hover { color:var(--ink); }
+  nav a.active { color:var(--brand); border-bottom-color:var(--brand); }
+  .top-right { margin-left:auto; display:flex; gap:12px; align-items:center; font-size:12px; color:var(--muted); }
+  .pill { display:flex; align-items:center; gap:7px; background:var(--panel2); border:1px solid var(--line); padding:6px 11px; border-radius:9px; }
   .dotg { width:8px; height:8px; border-radius:50%; background:var(--good); box-shadow:0 0 8px var(--good); }
   /* main */
-  main { flex:1; min-width:0; padding:26px 32px 60px; }
+  main { max-width:1280px; margin:0 auto; padding:26px 32px 60px; }
   .top { display:flex; align-items:center; gap:14px; margin-bottom:22px; flex-wrap:wrap; }
   .top h1 { font-size:22px; } .top .sub { color:var(--muted); font-size:13px; margin-top:3px; }
   .sp { flex:1; }
@@ -43,7 +43,7 @@
   .kpi .delta { font-size:12px; color:var(--muted); }
   .good { color:var(--good); } .bad { color:var(--bad); } .warnc { color:var(--warn); }
   .cols2 { grid-template-columns:1.2fr 1fr; } .cols2e { grid-template-columns:1fr 1fr; }
-  @media (max-width:1100px){ .cols2,.cols2e { grid-template-columns:1fr; } aside{width:70px} .brand div,nav a span,.side-foot{display:none} }
+  @media (max-width:1100px){ .cols2,.cols2e { grid-template-columns:1fr; } }
   /* bars */
   .hbar { display:grid; grid-template-columns:96px 1fr 52px; gap:10px; align-items:center; margin:7px 0; font-size:12.5px; }
   .track { background:var(--panel2); border-radius:6px; height:11px; overflow:hidden; position:relative; }
@@ -97,21 +97,19 @@
 </head>
 <body>
 
-<aside>
+<header class="topbar">
   <div class="brand"><div class="logo">&#128737;&#65039;</div><div><b>PHI Gateway</b><span>De-identification</span></div></div>
   <nav>
-    <a data-v="overview" class="active"><i>&#9632;</i><span>Overview</span></a>
-    <a data-v="workspace"><i>&#9998;</i><span>Workspace</span></a>
-    <a data-v="evaluation"><i>&#128202;</i><span>Evaluation</span></a>
-    <a data-v="utility"><i>&#129504;</i><span>LLM Utility</span></a>
-    <a data-v="about"><i>&#9432;</i><span>Pipeline &amp; Model</span></a>
+    <a data-v="overview" class="active"><span>Dashboard</span></a>
+    <a data-v="workspace"><span>Workspace</span></a>
+    <a data-v="utility"><span>LLM Utility</span></a>
   </nav>
-  <div class="side-foot">
+  <div class="top-right">
     <div class="pill"><span class="dotg"></span> Mapping stays local</div>
-    <div class="pill">Session: <b id="sess-notes">0</b> notes &middot; <b id="sess-ids">0</b> IDs masked</div>
-    <label class="switch"><input type="checkbox" id="theme" onchange="document.body.classList.toggle('light',this.checked)"> Light theme</label>
+    <div class="pill"><b id="sess-notes">0</b> notes &middot; <b id="sess-ids">0</b> IDs</div>
+    <label class="switch"><input type="checkbox" id="theme" onchange="document.body.classList.toggle('light',this.checked)"> Light</label>
   </div>
-</aside>
+</header>
 
 <main>
 
@@ -133,6 +131,30 @@
       <div id="vs" class="dual"></div></div>
     <div class="card"><h3>Gateway F1 per identifier type</h3><div class="hint">Precision trades off against the recall-first design.</div><div id="f1bars"></div></div>
   </div>
+<!-- ============ EVALUATION ============ -->
+<div style="margin-top:34px">
+  <h2 style="font-size:18px;margin-bottom:4px">Evaluation by system</h2><div style="color:var(--muted);font-size:13px;margin-bottom:14px">Entity-level precision / recall / F1 on the hand-labelled test notes.</div>
+  <div class="tabs" id="sys-tabs"></div>
+  <div class="grid kpis" id="ev-kpis"></div>
+  <div class="card"><h3>Per-identifier-type metrics</h3><div class="hint">Recall bars use the headline colour; FN are identifiers that leaked.</div>
+    <table><thead><tr><th>Type</th><th>Recall</th><th class="n">Precision</th><th class="n">Recall</th><th class="n">F1</th><th class="n">TP</th><th class="n">FN</th><th class="n">FP</th></tr></thead><tbody id="ev-body"></tbody></table></div>
+  <div class="card" style="margin-top:16px"><h3>Leaked notes</h3><div id="ev-leaks"></div></div>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<div style="margin-top:34px">
+  <h2 style="font-size:18px;margin-bottom:14px">Pipeline &amp; model</h2>
+  <div class="card"><h3>Round-trip flow</h3><div class="hint">The mapping never crosses the privacy boundary.</div>
+    <div class="steps">
+      <div class="step"><b>1 · Raw note</b>Contains PHI, stays local.</div>
+      <div class="step"><b>2 · deidentify()</b>DistilBERT NER + regex safety net.</div>
+      <div class="step"><b>3 · Masked note</b>Only [TYPE_n] placeholders.</div>
+      <div class="step"><b>4 · LLM</b>Sees masked text only.</div>
+      <div class="step"><b>5 · rehydrate()</b>Local mapping restores values; unknown placeholders are left untouched.</div>
+    </div></div>
+  <div class="card" style="margin-top:16px"><h3>Model card</h3><div id="model-card"></div></div>
+</div>
+
 </section>
 
 <!-- ============ WORKSPACE ============ -->
@@ -184,16 +206,6 @@
   </div>
 </section>
 
-<!-- ============ EVALUATION ============ -->
-<section class="view" id="v-evaluation">
-  <div class="top"><div><h1>Evaluation</h1><div class="sub">Entity-level precision / recall / F1 on the hand-labelled test notes.</div></div></div>
-  <div class="tabs" id="sys-tabs"></div>
-  <div class="grid kpis" id="ev-kpis"></div>
-  <div class="card"><h3>Per-identifier-type metrics</h3><div class="hint">Recall bars use the headline colour; FN are identifiers that leaked.</div>
-    <table><thead><tr><th>Type</th><th>Recall</th><th class="n">Precision</th><th class="n">Recall</th><th class="n">F1</th><th class="n">TP</th><th class="n">FN</th><th class="n">FP</th></tr></thead><tbody id="ev-body"></tbody></table></div>
-  <div class="card" style="margin-top:16px"><h3>Leaked notes</h3><div id="ev-leaks"></div></div>
-</section>
-
 <!-- ============ UTILITY ============ -->
 <section class="view" id="v-utility">
   <div class="top"><div><h1>LLM Utility Check</h1><div class="sub">Do masked prompts still give useful answers? 5 notes &times; 3 questions, original vs masked.</div></div></div>
@@ -205,20 +217,6 @@
       <div class="panel"><header>Masked note answer</header><div class="body" id="ut-m"></div></div>
       <div class="panel"><header>Masked, rehydrated</header><div class="body" id="ut-r"></div></div>
     </div></div>
-</section>
-
-<!-- ============ ABOUT ============ -->
-<section class="view" id="v-about">
-  <div class="top"><div><h1>Pipeline &amp; Model</h1><div class="sub">How the gateway works and what it was trained on.</div></div></div>
-  <div class="card"><h3>Round-trip flow</h3><div class="hint">The mapping never crosses the privacy boundary.</div>
-    <div class="steps">
-      <div class="step"><b>1 · Raw note</b>Contains PHI, stays local.</div>
-      <div class="step"><b>2 · deidentify()</b>DistilBERT NER + regex safety net.</div>
-      <div class="step"><b>3 · Masked note</b>Only [TYPE_n] placeholders.</div>
-      <div class="step"><b>4 · LLM</b>Sees masked text only.</div>
-      <div class="step"><b>5 · rehydrate()</b>Local mapping restores values; unknown placeholders are left untouched.</div>
-    </div></div>
-  <div class="card" style="margin-top:16px"><h3>Model card</h3><div id="model-card"></div></div>
 </section>
 
 </main>
