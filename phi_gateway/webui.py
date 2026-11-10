@@ -72,6 +72,41 @@ def index():
     return send_from_directory(app.static_folder, "index.html")
 
 
+@app.get("/api/metrics")
+def metrics():
+    """All evaluation systems (model, model-only, rules, presidio) for the dashboard."""
+    try:
+        m = json.loads((ROOT / "results" / "metrics_test.json").read_text())
+    except Exception:
+        return jsonify({"error": "results/metrics_test.json not found"}), 404
+    try:
+        s = json.loads((ROOT / "models" / "distilbert-phi" /
+                        "training_summary.json").read_text())
+    except Exception:
+        s = {}
+    return jsonify({"systems": m, "training": s})
+
+
+@app.get("/api/utility")
+def utility():
+    try:
+        return jsonify(json.loads(
+            (ROOT / "results" / "utility_check.json").read_text(encoding="utf-8")))
+    except Exception:
+        return jsonify({"error": "results/utility_check.json not found"}), 404
+
+
+@app.get("/api/samples")
+def samples():
+    out = []
+    for p in sorted((ROOT / "data").glob("*.txt")):
+        text = p.read_text(encoding="utf-8")
+        if "[[" in text:          # annotated gold-label files, not raw notes
+            continue
+        out.append({"name": p.stem.replace("_", " "), "text": text})
+    return jsonify(out)
+
+
 @app.get("/api/status")
 def status():
     return jsonify({"stats": _stats(),

@@ -3,385 +3,395 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PHI De-identification Gateway</title>
+<title>PHI Gateway · Dashboard</title>
 <style>
   :root {
-    --bg: #f4f6fb; --card: #ffffff; --ink: #0f172a; --muted: #64748b;
-    --line: #e2e8f0; --brand: #0d9488; --brand-dark: #0f766e;
+    --bg:#0b1220; --panel:#111a2e; --panel2:#16213a; --line:#1f2d4a; --ink:#e6edf7;
+    --muted:#8a9bbd; --brand:#2dd4bf; --brand2:#38bdf8; --good:#34d399; --bad:#f87171; --warn:#fbbf24;
     --name:#3b82f6; --location:#10b981; --date:#f59e0b; --age:#8b5cf6;
     --phone:#14b8a6; --email:#ec4899; --ssn:#ef4444; --mrn:#6366f1;
-    --healthplan:#06b6d4; --account:#d97706; --license:#f43f5e;
-    --url:#a855f7; --ip:#78716c;
+    --healthplan:#06b6d4; --account:#d97706; --license:#f43f5e; --url:#a855f7; --ip:#78716c;
   }
-  * { box-sizing: border-box; margin: 0; }
-  body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-         background: var(--bg); color: var(--ink); }
-  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px 80px; }
-
-  /* ---------- header ---------- */
-  header { background: linear-gradient(135deg, #0f766e, #134e4a);
-           color: #fff; padding: 22px 0 90px; }
-  .bar { max-width: 1280px; margin: 0 auto; padding: 0 24px;
-         display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-  .logo { width: 44px; height: 44px; border-radius: 12px;
-          background: rgba(255,255,255,.14); display: grid;
-          place-items: center; font-size: 24px; }
-  .bar h1 { font-size: 20px; font-weight: 650; letter-spacing: .2px; }
-  .bar .sub { font-size: 12.5px; opacity: .85; margin-top: 2px; }
-  .spacer { flex: 1; }
-  .stat { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18);
-          border-radius: 10px; padding: 8px 14px; text-align: center; }
-  .stat b { display: block; font-size: 17px; }
-  .stat span { font-size: 10.5px; text-transform: uppercase;
-               letter-spacing: .8px; opacity: .8; }
-
-  /* ---------- layout ---------- */
-  .main { margin-top: -64px; display: grid; gap: 20px; }
-  .card { background: var(--card); border: 1px solid var(--line);
-          border-radius: 16px; box-shadow: 0 8px 24px rgba(15,23,42,.06);
-          padding: 22px; animation: fade .3s ease; }
-  @keyframes fade { from { opacity: 0; transform: translateY(6px);} }
-  .card h2 { font-size: 15px; font-weight: 650; display: flex;
-             align-items: center; gap: 9px; margin-bottom: 4px; }
-  .card h2 .step { width: 22px; height: 22px; border-radius: 7px;
-                   background: var(--brand); color: #fff; font-size: 12px;
-                   display: grid; place-items: center; }
-  .hint { color: var(--muted); font-size: 12.5px; margin-bottom: 14px; }
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  @media (max-width: 980px) { .two-col { grid-template-columns: 1fr; } }
-
-  /* ---------- note editor ---------- */
-  textarea { width: 100%; height: 330px; resize: vertical; border: 1px solid var(--line);
-             border-radius: 12px; padding: 14px; font: 12.5px/1.65 Consolas, monospace;
-             color: var(--ink); background: #fbfcfe; outline: none; }
-  textarea:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(13,148,136,.12); }
-  .row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
-  button { border: none; border-radius: 10px; padding: 11px 18px; font-size: 13.5px;
-           font-weight: 600; cursor: pointer; transition: .15s; }
-  .primary { background: var(--brand); color: #fff; }
-  .primary:hover { background: var(--brand-dark); }
-  .ghost { background: #fff; color: var(--muted); border: 1px solid var(--line); }
-  .ghost:hover { border-color: var(--brand); color: var(--brand); }
-  button:disabled { opacity: .55; cursor: wait; }
-
-  /* ---------- masked output ---------- */
-  .out { height: 330px; overflow: auto; border: 1px solid var(--line);
-         border-radius: 12px; padding: 14px; font: 12.5px/1.9 Consolas, monospace;
-         white-space: pre-wrap; background: #fbfcfe; word-break: break-word; }
-  .chip { display: inline-block; border-radius: 7px; padding: 1px 8px;
-          margin: 1px 0; font-weight: 650; font-size: 11.5px; color: #fff;
-          cursor: default; }
-  .chip.revealed { color: #fff; box-shadow: 0 0 0 2px rgba(0,0,0,.08) inset; }
-  .chip.unknown { background: repeating-linear-gradient(45deg,#fda4af,#fda4af 6px,#fecdd3 6px,#fecdd3 12px);
-                  color: #881337; }
-  .metrics { display: flex; gap: 18px; margin-top: 12px; }
-  .metrics div b { font-size: 15px; }
-  .metrics div span { font-size: 11px; color: var(--muted); display: block; }
-  .switch { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px;
-            color: var(--muted); cursor: pointer; user-select: none; }
-  .switch input { accent-color: var(--brand); width: 15px; height: 15px; }
-
-  /* ---------- mapping table ---------- */
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; color: var(--muted); font-size: 11px;
-       text-transform: uppercase; letter-spacing: .7px; padding: 8px 10px;
-       border-bottom: 1px solid var(--line); }
-  td { padding: 8px 10px; border-bottom: 1px solid #f1f5f9; }
-  td.mono { font-family: Consolas, monospace; font-size: 12px; }
-  .badge { display: inline-block; padding: 2px 9px; border-radius: 6px;
-           font-size: 10.5px; font-weight: 700; color: #fff; }
-
-  /* ---------- round trip ---------- */
-  .qrow { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-  .qrow input { flex: 1; min-width: 260px; border: 1px solid var(--line);
-                border-radius: 10px; padding: 11px 14px; font-size: 13.5px;
-                outline: none; }
-  .qrow input:focus { border-color: var(--brand); }
-  .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  @media (max-width: 980px) { .answers { grid-template-columns: 1fr; } }
-  .panel { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
-  .panel header { background: #f8fafc; padding: 10px 14px; font-size: 12px;
-                  font-weight: 700; color: var(--muted);
-                  display: flex; gap: 8px; align-items: center; }
-  .panel header .dot { width: 8px; height: 8px; border-radius: 50%; }
-  .panel .body { padding: 14px; font-size: 13.5px; line-height: 1.75;
-                 min-height: 120px; white-space: pre-wrap; }
-  .thinking { color: var(--muted); font-style: italic; }
-  .blink { animation: blink 1.2s infinite; }
-  @keyframes blink { 50% { opacity: .35; } }
-  .warn { background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412;
-          border-radius: 10px; padding: 10px 14px; font-size: 12.5px;
-          margin-top: 14px; display: none; }
-  .privacy { margin-top: 14px; font-size: 12px; color: var(--muted);
-             display: flex; gap: 8px; align-items: center; }
-
-  /* ---------- legend ---------- */
-  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-  .legend .badge { opacity: .95; }
-  footer { text-align: center; color: var(--muted); font-size: 12px; margin-top: 26px; }
+  body.light { --bg:#f3f6fb; --panel:#ffffff; --panel2:#f6f8fc; --line:#e2e8f0; --ink:#0f172a; --muted:#64748b; }
+  * { box-sizing:border-box; margin:0; }
+  body { font-family:"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--ink); display:flex; min-height:100vh; }
+  /* sidebar */
+  aside { width:236px; background:var(--panel); border-right:1px solid var(--line); padding:20px 14px; position:sticky; top:0; height:100vh; display:flex; flex-direction:column; gap:6px; flex-shrink:0; }
+  .brand { display:flex; gap:10px; align-items:center; padding:4px 8px 18px; }
+  .brand .logo { width:38px; height:38px; border-radius:11px; background:linear-gradient(135deg,var(--brand),var(--brand2)); display:grid; place-items:center; font-size:20px; }
+  .brand b { font-size:14.5px; display:block; } .brand span { font-size:11px; color:var(--muted); }
+  nav a { display:flex; gap:11px; align-items:center; padding:10px 12px; border-radius:10px; color:var(--muted); font-size:13.5px; font-weight:600; cursor:pointer; user-select:none; }
+  nav a:hover { background:var(--panel2); color:var(--ink); }
+  nav a.active { background:linear-gradient(90deg,rgba(45,212,191,.16),rgba(56,189,248,.06)); color:var(--brand); }
+  nav a i { font-style:normal; width:18px; text-align:center; }
+  .side-foot { margin-top:auto; font-size:11.5px; color:var(--muted); display:grid; gap:8px; }
+  .pill { display:flex; align-items:center; gap:7px; background:var(--panel2); border:1px solid var(--line); padding:8px 10px; border-radius:9px; }
+  .dotg { width:8px; height:8px; border-radius:50%; background:var(--good); box-shadow:0 0 8px var(--good); }
+  /* main */
+  main { flex:1; min-width:0; padding:26px 32px 60px; }
+  .top { display:flex; align-items:center; gap:14px; margin-bottom:22px; flex-wrap:wrap; }
+  .top h1 { font-size:22px; } .top .sub { color:var(--muted); font-size:13px; margin-top:3px; }
+  .sp { flex:1; }
+  .view { display:none; animation:fade .25s ease; } .view.active { display:block; }
+  @keyframes fade { from { opacity:0; transform:translateY(6px);} }
+  .grid { display:grid; gap:16px; }
+  .kpis { grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); margin-bottom:16px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:18px 20px; }
+  .card h3 { font-size:13.5px; margin-bottom:3px; } .card .hint { font-size:12px; color:var(--muted); margin-bottom:14px; }
+  .kpi .lbl { font-size:11px; text-transform:uppercase; letter-spacing:.8px; color:var(--muted); }
+  .kpi .val { font-size:30px; font-weight:700; margin:6px 0 2px; }
+  .kpi .delta { font-size:12px; color:var(--muted); }
+  .good { color:var(--good); } .bad { color:var(--bad); } .warnc { color:var(--warn); }
+  .cols2 { grid-template-columns:1.2fr 1fr; } .cols2e { grid-template-columns:1fr 1fr; }
+  @media (max-width:1100px){ .cols2,.cols2e { grid-template-columns:1fr; } aside{width:70px} .brand div,nav a span,.side-foot{display:none} }
+  /* bars */
+  .hbar { display:grid; grid-template-columns:96px 1fr 52px; gap:10px; align-items:center; margin:7px 0; font-size:12.5px; }
+  .track { background:var(--panel2); border-radius:6px; height:11px; overflow:hidden; position:relative; }
+  .fill { height:100%; border-radius:6px; transition:width .7s cubic-bezier(.2,.8,.2,1); width:0; }
+  .dual .track { height:9px; margin:2px 0; }
+  .legend { display:flex; gap:14px; font-size:12px; color:var(--muted); margin-bottom:8px; flex-wrap:wrap; }
+  .legend i { display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px; vertical-align:-1px; }
+  /* tables */
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:left; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.7px; padding:9px 10px; border-bottom:1px solid var(--line); }
+  td { padding:9px 10px; border-bottom:1px solid var(--line); }
+  td.n, th.n { text-align:right; font-variant-numeric:tabular-nums; }
+  tr:hover td { background:var(--panel2); }
+  .badge { display:inline-block; padding:2px 9px; border-radius:6px; font-size:10.5px; font-weight:700; color:#fff; }
+  .mono { font-family:Consolas,monospace; font-size:12px; }
+  /* tabs / buttons */
+  .tabs { display:inline-flex; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:3px; gap:2px; margin-bottom:14px; flex-wrap:wrap; }
+  .tabs button { background:none; border:none; color:var(--muted); padding:7px 14px; border-radius:8px; font-weight:600; font-size:12.5px; cursor:pointer; }
+  .tabs button.on { background:var(--brand); color:#04201c; }
+  button.btn { border:none; border-radius:10px; padding:10px 18px; font-size:13px; font-weight:700; cursor:pointer; }
+  .primary { background:linear-gradient(135deg,var(--brand),var(--brand2)); color:#04201c; }
+  .ghost { background:var(--panel2); color:var(--muted); border:1px solid var(--line) !important; }
+  .ghost:hover { color:var(--brand); }
+  button:disabled { opacity:.55; cursor:wait; }
+  textarea,input[type=text],select { width:100%; border:1px solid var(--line); border-radius:12px; padding:13px; background:var(--panel2); color:var(--ink); font:12.5px/1.65 Consolas,monospace; outline:none; }
+  textarea { height:320px; resize:vertical; } textarea:focus,input:focus,select:focus { border-color:var(--brand); }
+  select { font-family:inherit; font-size:13px; padding:10px 12px; width:auto; }
+  .row { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; align-items:center; }
+  .out { height:320px; overflow:auto; border:1px solid var(--line); border-radius:12px; padding:13px; font:12.5px/1.9 Consolas,monospace; white-space:pre-wrap; background:var(--panel2); word-break:break-word; }
+  .chip { display:inline-block; border-radius:7px; padding:1px 8px; font-weight:650; font-size:11.5px; color:#fff; }
+  .chip.unknown { background:repeating-linear-gradient(45deg,#7f1d1d,#7f1d1d 6px,#991b1b 6px,#991b1b 12px); color:#fecaca; }
+  .stats { display:flex; gap:22px; margin-top:12px; } .stats b { font-size:17px; } .stats span { display:block; font-size:11px; color:var(--muted); }
+  .switch { display:inline-flex; gap:7px; align-items:center; font-size:12.5px; color:var(--muted); cursor:pointer; }
+  .switch input { accent-color:var(--brand); }
+  .answers { display:grid; grid-template-columns:1fr 1fr; gap:14px; } @media(max-width:1100px){.answers{grid-template-columns:1fr}}
+  .panel { border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--panel2); }
+  .panel header { padding:9px 14px; font-size:11.5px; font-weight:700; color:var(--muted); border-bottom:1px solid var(--line); display:flex; align-items:center; gap:8px; }
+  .panel .body { padding:14px; font-size:13.5px; line-height:1.75; min-height:110px; white-space:pre-wrap; }
+  .thinking { color:var(--muted); font-style:italic; } .blink { animation:blink 1.2s infinite; } @keyframes blink{50%{opacity:.35}}
+  .warnbox { background:rgba(251,191,36,.1); border:1px solid rgba(251,191,36,.4); color:var(--warn); border-radius:10px; padding:10px 14px; font-size:12.5px; margin-top:12px; display:none; }
+  .privacy { margin-top:12px; font-size:12px; color:var(--muted); }
+  .ledgend { display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+  .leak { background:rgba(248,113,113,.08); border:1px solid rgba(248,113,113,.35); border-radius:10px; padding:10px 14px; font-size:13px; margin-top:8px; }
+  .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; }
+  .step { background:var(--panel2); border:1px solid var(--line); border-radius:12px; padding:12px; font-size:12.5px; }
+  .step b { color:var(--brand); display:block; margin-bottom:4px; }
+  .qsel { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+  .qsel button { background:var(--panel2); border:1px solid var(--line); color:var(--muted); border-radius:8px; padding:6px 11px; font-size:12px; cursor:pointer; font-weight:600; }
+  .qsel button.on { border-color:var(--brand); color:var(--brand); }
 </style>
 </head>
 <body>
 
-<header>
-  <div class="bar">
-    <div class="logo">&#128737;&#65039;</div>
-    <div>
-      <h1>PHI De-identification Gateway</h1>
-      <div class="sub">mask &rarr; LLM &rarr; restore &nbsp;&middot;&nbsp; the mapping never leaves this machine</div>
-    </div>
-    <div class="spacer"></div>
-    <div class="stat"><b id="st-params">&ndash;</b><span>parameters</span></div>
-    <div class="stat"><b id="st-recall">&ndash;</b><span>test recall</span></div>
-    <div class="stat"><b id="st-leak">&ndash;</b><span>leak rate</span></div>
-    <div class="stat"><b id="st-presidio">88%</b><span>presidio leaks</span></div>
+<aside>
+  <div class="brand"><div class="logo">&#128737;&#65039;</div><div><b>PHI Gateway</b><span>De-identification</span></div></div>
+  <nav>
+    <a data-v="overview" class="active"><i>&#9632;</i><span>Overview</span></a>
+    <a data-v="workspace"><i>&#9998;</i><span>Workspace</span></a>
+    <a data-v="evaluation"><i>&#128202;</i><span>Evaluation</span></a>
+    <a data-v="utility"><i>&#129504;</i><span>LLM Utility</span></a>
+    <a data-v="about"><i>&#9432;</i><span>Pipeline &amp; Model</span></a>
+  </nav>
+  <div class="side-foot">
+    <div class="pill"><span class="dotg"></span> Mapping stays local</div>
+    <div class="pill">Session: <b id="sess-notes">0</b> notes &middot; <b id="sess-ids">0</b> IDs masked</div>
+    <label class="switch"><input type="checkbox" id="theme" onchange="document.body.classList.toggle('light',this.checked)"> Light theme</label>
   </div>
-</header>
+</aside>
 
-<div class="wrap">
-<div class="main">
+<main>
 
-  <!-- STEP 1 -->
+<!-- ============ OVERVIEW ============ -->
+<section class="view active" id="v-overview">
+  <div class="top"><div><h1>Overview</h1><div class="sub">Hand-labelled test set &middot; <span id="ov-notes">25</span> notes &middot; <span id="ov-ids">414</span> identifiers</div></div></div>
+  <div class="grid kpis" id="kpis"></div>
+  <div class="grid cols2">
+    <div class="card"><h3>System comparison</h3><div class="hint">Recall is the headline metric: the share of identifiers actually caught.</div>
+      <div class="legend"><span><i style="background:var(--brand)"></i>Recall</span><span><i style="background:var(--brand2)"></i>Precision</span><span><i style="background:var(--warn)"></i>F1</span></div>
+      <div id="cmp"></div></div>
+    <div class="card"><h3>Leak rate by system</h3><div class="hint">Share of notes with at least one identifier reaching the LLM. Lower is better.</div>
+      <div id="leaks"></div>
+      <h3 style="margin-top:18px">Remaining leaks (honest view)</h3><div id="leaklist"></div></div>
+  </div>
+  <div class="grid cols2e" style="margin-top:16px">
+    <div class="card"><h3>Recall per identifier type &mdash; Gateway vs Presidio</h3>
+      <div class="legend"><span><i style="background:var(--brand)"></i>Gateway</span><span><i style="background:#64748b"></i>Presidio</span></div>
+      <div id="vs" class="dual"></div></div>
+    <div class="card"><h3>Gateway F1 per identifier type</h3><div class="hint">Precision trades off against the recall-first design.</div><div id="f1bars"></div></div>
+  </div>
+</section>
+
+<!-- ============ WORKSPACE ============ -->
+<section class="view" id="v-workspace">
+  <div class="top"><div><h1>Workspace</h1><div class="sub">De-identify a note, inspect the private mapping, and run the LLM round trip.</div></div></div>
   <div class="card">
-    <h2><span class="step">1</span> De-identify the clinical note</h2>
-    <div class="hint">Paste any clinical note. The DistilBERT model (65,211,675 parameters) plus the regex safety net find and mask identifiers. Only the <b>masked</b> version is ever sent onward.</div>
-    <div class="two-col">
+    <h3>1 &middot; Clinical note &rarr; masked note</h3>
+    <div class="grid cols2e" style="margin-top:12px">
       <div>
         <textarea id="note" spellcheck="false"></textarea>
         <div class="row">
-          <button class="primary" id="btn-mask" onclick="deidentify()">&#128274; De-identify</button>
-          <button class="ghost" onclick="loadExample()">&#128221; Load example</button>
-          <button class="ghost" onclick="clearAll()">Clear</button>
+          <button class="btn primary" id="btn-mask" onclick="deidentify()">&#128274; De-identify</button>
+          <select id="samples" onchange="pickSample()"><option>Load sample&hellip;</option></select>
+          <button class="btn ghost" onclick="clearAll()">Clear</button>
         </div>
       </div>
       <div>
-        <div class="out" id="masked-out"><span class="thinking">The masked note will appear here&hellip;</span></div>
-        <div class="metrics">
+        <div class="out" id="masked-out"><span class="thinking">The masked note appears here&hellip;</span></div>
+        <div class="stats">
           <div><b id="m-count">0</b><span>identifiers masked</span></div>
           <div><b id="m-late">0</b><span>by safety net</span></div>
-          <div><b id="m-types">0</b><span>identifier types</span></div>
+          <div><b id="m-types">0</b><span>types</span></div>
+          <div><b id="m-ms">&ndash;</b><span>latency</span></div>
         </div>
-        <div class="row">
-          <label class="switch"><input type="checkbox" id="reveal" onchange="renderMasked()"> Reveal original values <i>(local only &mdash; shows what rehydration restores)</i></label>
-        </div>
+        <div class="row"><label class="switch"><input type="checkbox" id="reveal" onchange="renderMasked()"> Reveal original values <i>(local only)</i></label></div>
       </div>
     </div>
-    <div class="legend" id="legend"></div>
+    <div class="ledgend" id="legend"></div>
   </div>
-
-  <!-- STEP 2 -->
-  <div class="card">
-    <h2><span class="step">2</span> Private mapping &nbsp;<small style="color:var(--muted);font-weight:500">(stays on this machine &mdash; never sent to the LLM)</small></h2>
-    <div class="hint">Each unique value maps to one stable placeholder. The same value always gets the same placeholder inside a note.</div>
-    <div style="max-height:260px;overflow:auto">
-      <table>
-        <thead><tr><th>Type</th><th>Placeholder</th><th>Original value</th></tr></thead>
-        <tbody id="map-body"><tr><td colspan="3" style="color:var(--muted)">Run step 1 first.</td></tr></tbody>
-      </table>
-    </div>
+  <div class="grid cols2e" style="margin-top:16px">
+    <div class="card"><h3>2 &middot; Private mapping <small style="color:var(--muted)">(never sent to the LLM)</small></h3>
+      <div class="hint">One stable placeholder per unique value.</div>
+      <div style="max-height:300px;overflow:auto"><table><thead><tr><th>Type</th><th>Placeholder</th><th>Original</th></tr></thead>
+      <tbody id="map-body"><tr><td colspan="3" style="color:var(--muted)">Run step 1 first.</td></tr></tbody></table></div></div>
+    <div class="card"><h3>Detected by type</h3><div class="hint">Distribution of masked identifiers in this note.</div><div id="type-dist"><span class="thinking">No data yet.</span></div></div>
   </div>
-
-  <!-- STEP 3 -->
-  <div class="card">
-    <h2><span class="step">3</span> Round trip through the LLM</h2>
-    <div class="hint">Ask anything about the <b>masked</b> note. Left: exactly what the LLM could see. Right: the same answer after identifiers are restored locally.</div>
-    <div class="qrow">
-      <input id="question" value="What is the working diagnosis and the follow-up plan? Answer in 3 sentences."
-             onkeydown="if(event.key==='Enter')ask()">
-      <button class="primary" id="btn-ask" onclick="ask()">&#129302; Ask the LLM</button>
-      <label class="switch"><input type="checkbox" id="mock"> Instant mock (skip the ~30&nbsp;s local model)</label>
-    </div>
+  <div class="card" style="margin-top:16px">
+    <h3>3 &middot; Round trip through the LLM</h3>
+    <div class="hint">Left: exactly what the LLM could see. Right: the same answer after local rehydration.</div>
+    <div class="row" style="margin:0 0 14px"><input type="text" id="question" value="What is the working diagnosis and the follow-up plan? Answer in 3 sentences." style="flex:1;min-width:260px;font-family:inherit;font-size:13.5px" onkeydown="if(event.key==='Enter')ask()">
+      <button class="btn primary" id="btn-ask" onclick="ask()">&#129302; Ask the LLM</button>
+      <label class="switch"><input type="checkbox" id="mock"> Instant mock (skip ~30 s local model)</label></div>
     <div class="answers">
-      <div class="panel">
-        <header><span class="dot" style="background:var(--muted)"></span> LLM answer &mdash; what it could see</header>
-        <div class="body" id="ans-raw"><span class="thinking">Ask a question&hellip;</span></div>
-      </div>
-      <div class="panel">
-        <header><span class="dot" style="background:var(--brand)"></span> Rehydrated answer &mdash; identifiers restored</header>
-        <div class="body" id="ans-rehyd"><span class="thinking">Ask a question&hellip;</span></div>
-      </div>
+      <div class="panel"><header><span class="dotg" style="background:var(--muted);box-shadow:none"></span> LLM answer &mdash; what it could see</header><div class="body" id="ans-raw"><span class="thinking">Ask a question&hellip;</span></div></div>
+      <div class="panel"><header><span class="dotg"></span> Rehydrated &mdash; identifiers restored</header><div class="body" id="ans-rehyd"><span class="thinking">Ask a question&hellip;</span></div></div>
     </div>
-    <div class="warn" id="unknown-warn"></div>
-    <div class="privacy">&#128274; <span>Privacy check: the request contained only the masked note and your question. The mapping is applied <b>after</b> the answer returns, in this browser, on this machine.</span></div>
+    <div class="warnbox" id="unknown-warn"></div>
+    <div class="privacy">&#128274; The request contained only the masked note and your question. The mapping is applied after the answer returns, on this machine.</div>
   </div>
+</section>
 
-  <footer>PHI De-identification Gateway &middot; DistilBERT (65,211,675 params) + regex safety net &middot; recall 0.966 / leak rate 4% on the 25-note hand-labelled test set &middot; vs Presidio 0.746 / 88%</footer>
-</div>
-</div>
+<!-- ============ EVALUATION ============ -->
+<section class="view" id="v-evaluation">
+  <div class="top"><div><h1>Evaluation</h1><div class="sub">Entity-level precision / recall / F1 on the hand-labelled test notes.</div></div></div>
+  <div class="tabs" id="sys-tabs"></div>
+  <div class="grid kpis" id="ev-kpis"></div>
+  <div class="card"><h3>Per-identifier-type metrics</h3><div class="hint">Recall bars use the headline colour; FN are identifiers that leaked.</div>
+    <table><thead><tr><th>Type</th><th>Recall</th><th class="n">Precision</th><th class="n">Recall</th><th class="n">F1</th><th class="n">TP</th><th class="n">FN</th><th class="n">FP</th></tr></thead><tbody id="ev-body"></tbody></table></div>
+  <div class="card" style="margin-top:16px"><h3>Leaked notes</h3><div id="ev-leaks"></div></div>
+</section>
+
+<!-- ============ UTILITY ============ -->
+<section class="view" id="v-utility">
+  <div class="top"><div><h1>LLM Utility Check</h1><div class="sub">Do masked prompts still give useful answers? 5 notes &times; 3 questions, original vs masked.</div></div></div>
+  <div class="grid kpis" id="ut-kpis"></div>
+  <div class="card"><div class="qsel" id="ut-sel"></div>
+    <div class="hint" id="ut-q" style="font-size:13px;color:var(--ink)"></div>
+    <div class="answers" style="grid-template-columns:repeat(3,1fr)">
+      <div class="panel"><header>Original note answer</header><div class="body" id="ut-o"></div></div>
+      <div class="panel"><header>Masked note answer</header><div class="body" id="ut-m"></div></div>
+      <div class="panel"><header>Masked, rehydrated</header><div class="body" id="ut-r"></div></div>
+    </div></div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="view" id="v-about">
+  <div class="top"><div><h1>Pipeline &amp; Model</h1><div class="sub">How the gateway works and what it was trained on.</div></div></div>
+  <div class="card"><h3>Round-trip flow</h3><div class="hint">The mapping never crosses the privacy boundary.</div>
+    <div class="steps">
+      <div class="step"><b>1 · Raw note</b>Contains PHI, stays local.</div>
+      <div class="step"><b>2 · deidentify()</b>DistilBERT NER + regex safety net.</div>
+      <div class="step"><b>3 · Masked note</b>Only [TYPE_n] placeholders.</div>
+      <div class="step"><b>4 · LLM</b>Sees masked text only.</div>
+      <div class="step"><b>5 · rehydrate()</b>Local mapping restores values; unknown placeholders are left untouched.</div>
+    </div></div>
+  <div class="card" style="margin-top:16px"><h3>Model card</h3><div id="model-card"></div></div>
+</section>
+
+</main>
 
 <script>
-const COLORS = {NAME:"var(--name)",LOCATION:"var(--location)",DATE:"var(--date)",
-  AGE:"var(--age)",PHONE:"var(--phone)",EMAIL:"var(--email)",SSN:"var(--ssn)",
-  MRN:"var(--mrn)",HEALTHPLAN:"var(--healthplan)",ACCOUNT:"var(--account)",
-  LICENSE:"var(--license)",URL:"var(--url)",IP:"var(--ip)"};
+const COLORS = {NAME:"var(--name)",LOCATION:"var(--location)",DATE:"var(--date)",AGE:"var(--age)",PHONE:"var(--phone)",EMAIL:"var(--email)",SSN:"var(--ssn)",MRN:"var(--mrn)",HEALTHPLAN:"var(--healthplan)",ACCOUNT:"var(--account)",LICENSE:"var(--license)",URL:"var(--url)",IP:"var(--ip)"};
 const PH_RE = /\[(NAME|LOCATION|DATE|AGE|PHONE|EMAIL|SSN|MRN|HEALTHPLAN|ACCOUNT|LICENSE|URL|IP)_(\d+)\]/g;
+const SYS_LABEL = {model:"PHI Gateway (model + rules)","model-only":"DistilBERT only",rules:"Rules only",presidio:"Microsoft Presidio"};
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const pct = x => (x*100).toFixed(1)+"%";
+let MET=null, TRAIN={}, UTIL=null, MASKED=null, MAPPING={}, SESS={notes:0,ids:0};
 
-const EXAMPLE = `IRONGATE REGIONAL MEDICAL CENTER - Hospitalist Service
-Admission note - 10/28/2026
+/* ---------- nav ---------- */
+document.querySelectorAll("nav a").forEach(a => a.onclick = () => {
+  document.querySelectorAll("nav a").forEach(x=>x.classList.toggle("active",x===a));
+  document.querySelectorAll(".view").forEach(v=>v.classList.toggle("active",v.id==="v-"+a.dataset.v));
+  if (a.dataset.v==="overview") animateBars();
+});
 
-Patient: Bernadette Kowalski-Voss    MRN: IG-447-2091
-DOB: 03/17/1931    PCP: Dr. Anneke Visser
+function bar(color, w) { return `<div class="track"><div class="fill" data-w="${(w*100).toFixed(1)}" style="background:${color}"></div></div>`; }
+function animateBars(){ requestAnimationFrame(()=>setTimeout(()=>document.querySelectorAll(".view.active .fill").forEach(f=>f.style.width=f.dataset.w+"%"),30)); }
 
-History: 95-year-old female transferred from Irongate Nursing and
-Rehab, 44 Millrace Road, after a witnessed fall 2 days ago.
-Daughter Rosa Kowalski reports declining oral intake since last week.
+function kpi(label, val, delta, cls="") { return `<div class="card kpi"><div class="lbl">${label}</div><div class="val ${cls}">${val}</div><div class="delta">${delta}</div></div>`; }
 
-Assessment: Hip contusion without fracture; early pneumonia treated
-with ceftriaxone. Delirium screen positive, likely multifactorial.
-
-Plan: continue antibiotics, physical therapy twice daily, fall
-precautions. Family meeting scheduled 11/02/2026; contact daughter at
-555-014-8829 or email r.kowalski@example-mail.com.
-Results portal: portal.irongate-example.org.
-
-Electronically signed by Dr. Owen Masterson, MD on 28 Oct 2026.`;
-
-let MASKED = null, MAPPING = {};
-
-const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-
-function chipHtml(type, n, value, revealed) {
-  const c = COLORS[type] || "#64748b";
-  const label = revealed && value ? value : `[${type}_${n}]`;
-  return `<span class="chip" style="background:${c}" title="${type}">${esc(label)}</span>`;
-}
-
-function renderMasked() {
-  if (MASKED === null) return;
-  const reveal = document.getElementById("reveal").checked;
-  let html = esc(MASKED).replace(PH_RE, (m, t, n) => {
-    const ph = `[${t}_${n}]`;
-    return MAPPING[ph] !== undefined
-      ? chipHtml(t, n, MAPPING[ph], reveal)
-      : `<span class="chip unknown">${m}</span>`;
-  });
-  document.getElementById("masked-out").innerHTML = html;
-}
-
-function renderLegend() {
-  const el = document.getElementById("legend");
-  el.innerHTML = Object.entries(COLORS)
-    .map(([t, c]) => `<span class="badge" style="background:${c}">${t}</span>`).join("");
-}
-
-async function loadStatus() {
-  try {
-    const r = await fetch("/api/status"); const d = await r.json(); const s = d.stats;
-    if (s.params) document.getElementById("st-params").textContent =
-      (s.params/1e6).toFixed(1) + "M";
-    if (s.recall !== undefined) document.getElementById("st-recall").textContent =
-      Number(s.recall).toFixed(3);
-    if (s.leak_rate !== undefined) document.getElementById("st-leak").textContent =
-      Math.round(s.leak_rate*100) + "%";
-  } catch(e) {}
-}
-
-async function deidentify() {
-  const btn = document.getElementById("btn-mask");
-  const text = document.getElementById("note").value;
-  if (!text.trim()) return;
-  btn.disabled = true; btn.textContent = "Masking\u2026";
-  MASKED = null;
-  document.getElementById("masked-out").innerHTML =
-    '<span class="thinking blink">Running DistilBERT + rules\u2026</span>';
-  try {
-    const r = await fetch("/api/deidentify", {
-      method: "POST", headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({text})
-    });
-    const d = await r.json();
-    if (d.error) throw new Error(d.error);
-    MASKED = d.masked; MAPPING = d.mapping;
-    document.getElementById("m-count").textContent = d.n_masked;
-    document.getElementById("m-late").textContent = d.late_catches;
-    document.getElementById("m-types").textContent =
-      new Set(Object.keys(MAPPING).map(k => k.slice(1, k.indexOf("_")))).size;
-    renderMasked(); renderMapping(d.entities);
-  } catch (e) {
-    document.getElementById("masked-out").innerHTML =
-      `<span style="color:#ef4444">Error: ${esc(String(e.message||e))}</span>`;
-  } finally { btn.disabled = false; btn.innerHTML = "&#128274; De-identify"; }
-}
-
-function renderMapping(entities) {
-  const body = document.getElementById("map-body");
-  const lateSet = new Set((entities||[]).filter(e=>e.late)
-    .map(e => e.start + ":" + e.end));
-  body.innerHTML = Object.entries(MAPPING).map(([ph, val]) => {
-    const t = ph.slice(1, ph.indexOf("_"));
-    const late = (entities||[]).some(e => e.late && e.value === val);
-    return `<tr>
-      <td><span class="badge" style="background:${COLORS[t]||'#64748b'}">${t}</span>
-          ${late ? '<span style="color:var(--brand);font-size:10.5px" title="caught by the post-mask safety net">&#9889;</span>':''}</td>
-      <td class="mono">${ph}</td>
-      <td class="mono">${esc(val)}</td></tr>`;
+/* ---------- overview ---------- */
+function renderOverview() {
+  const g = MET.model, p = MET.presidio;
+  const nIds = Object.values(g.per_type).reduce((a,t)=>a+t.tp+t.fn,0);
+  document.getElementById("ov-notes").textContent = g.n_notes;
+  document.getElementById("ov-ids").textContent = nIds;
+  document.getElementById("kpis").innerHTML =
+    kpi("Recall (headline)", pct(g.micro.recall), `Presidio ${pct(p.micro.recall)}`, "good") +
+    kpi("Leak rate", pct(g.leak_rate).replace(".0",""), `Presidio ${Math.round(p.leak_rate*100)}%`, g.leak_rate<=.1?"good":"bad") +
+    kpi("Precision", pct(g.micro.precision), "recall-first trade-off") +
+    kpi("F1", g.micro.f1.toFixed(3), `Presidio ${p.micro.f1.toFixed(3)}`) +
+    kpi("Parameters", (TRAIN.total_params/1e6).toFixed(1)+"M", `${(TRAIN.total_params).toLocaleString()} exact &middot; cap 1B`);
+  const order = ["model","model-only","rules","presidio"];
+  document.getElementById("cmp").innerHTML = order.map(k => {
+    const m = MET[k].micro;
+    return `<div style="margin-bottom:14px"><div style="font-size:12.5px;font-weight:600;margin-bottom:4px">${SYS_LABEL[k]}</div>`+
+      [["Recall",m.recall,"var(--brand)"],["Precision",m.precision,"var(--brand2)"],["F1",m.f1,"var(--warn)"]].map(([n,v,c])=>
+        `<div class="hbar" style="margin:3px 0"><span style="color:var(--muted)">${n}</span>${bar(c,v)}<span>${v.toFixed(3)}</span></div>`).join("")+`</div>`;
   }).join("");
+  document.getElementById("leaks").innerHTML = order.map(k=>
+    `<div class="hbar"><span>${SYS_LABEL[k].split(" (")[0]}</span>${bar(MET[k].leak_rate<=.1?"var(--good)":"var(--bad)",MET[k].leak_rate)}<span>${Math.round(MET[k].leak_rate*100)}%</span></div>`).join("");
+  document.getElementById("leaklist").innerHTML = g.leaked_notes.length ?
+    g.leaked_notes.map(n=>`<div class="leak"><b>${n.id}</b> &mdash; ${n.entities.map(e=>`${e.label}: <span class="mono">${esc(e.value)}</span>`).join(" &middot; ")}</div>`).join("")
+    : '<div class="good">No leaks.</div>';
+  const types = Object.keys(g.per_type);
+  document.getElementById("vs").innerHTML = types.map(t=>
+    `<div class="hbar"><span><span class="badge" style="background:${COLORS[t]}">${t}</span></span><div>${bar("var(--brand)",g.per_type[t].recall)}${bar("#64748b",p.per_type[t]?p.per_type[t].recall:0)}</div><span style="font-size:11px">${(g.per_type[t].recall*100).toFixed(0)} / ${p.per_type[t]?(p.per_type[t].recall*100).toFixed(0):0}</span></div>`).join("");
+  document.getElementById("f1bars").innerHTML = types.map(t=>
+    `<div class="hbar"><span><span class="badge" style="background:${COLORS[t]}">${t}</span></span>${bar(COLORS[t],g.per_type[t].f1)}<span>${g.per_type[t].f1.toFixed(2)}</span></div>`).join("");
+  animateBars();
 }
 
-function rehydrateForDisplay(answer) {
-  let unknowns = [];
-  const html = esc(answer).replace(PH_RE, (m, t, n) => {
-    const ph = `[${t}_${n}]`;
-    if (MAPPING[ph] !== undefined)
-      return chipHtml(t, n, MAPPING[ph], true);
-    unknowns.push(m);
-    return `<span class="chip unknown">${m}</span>`;
-  });
-  return {html, unknowns};
+/* ---------- evaluation ---------- */
+let CUR_SYS="model";
+function renderEval() {
+  const tabs = document.getElementById("sys-tabs");
+  tabs.innerHTML = Object.keys(SYS_LABEL).map(k=>`<button class="${k===CUR_SYS?"on":""}" onclick="CUR_SYS='${k}';renderEval()">${SYS_LABEL[k]}</button>`).join("");
+  const s = MET[CUR_SYS];
+  document.getElementById("ev-kpis").innerHTML =
+    kpi("Recall", pct(s.micro.recall), "micro-average","good")+kpi("Precision", pct(s.micro.precision),"micro-average")+
+    kpi("F1", s.micro.f1.toFixed(3),"micro-average")+kpi("Leak rate", Math.round(s.leak_rate*100)+"%", `${s.leaked_notes.length} of ${s.n_notes} notes leaked`, s.leak_rate<=.1?"good":"bad");
+  document.getElementById("ev-body").innerHTML = Object.entries(s.per_type).map(([t,m])=>
+    `<tr><td><span class="badge" style="background:${COLORS[t]}">${t}</span></td><td style="width:26%">${bar(m.recall>=.95?"var(--good)":m.recall>=.8?"var(--warn)":"var(--bad)",m.recall)}</td>
+     <td class="n">${m.precision.toFixed(3)}</td><td class="n"><b>${m.recall.toFixed(3)}</b></td><td class="n">${m.f1.toFixed(3)}</td><td class="n">${m.tp}</td><td class="n ${m.fn?"bad":""}">${m.fn}</td><td class="n">${m.fp}</td></tr>`).join("");
+  document.getElementById("ev-leaks").innerHTML = s.leaked_notes.length ?
+    s.leaked_notes.map(n=>`<div class="leak"><b>${n.id}</b> &mdash; ${n.entities.length} leaked: ${n.entities.slice(0,8).map(e=>`${e.label}: <span class="mono">${esc(e.value)}</span>`).join(" &middot; ")}${n.entities.length>8?" …":""}</div>`).join("")
+    : '<div class="good">No leaked notes.</div>';
+  animateBars();
 }
 
-async function ask() {
-  if (MASKED === null) { alert("De-identify a note first (step 1)."); return; }
-  const q = document.getElementById("question").value.trim();
-  if (!q) return;
-  const mock = document.getElementById("mock").checked;
-  const btn = document.getElementById("btn-ask");
-  const raw = document.getElementById("ans-raw");
-  const reh = document.getElementById("ans-rehyd");
-  const warn = document.getElementById("unknown-warn");
-  warn.style.display = "none";
-  btn.disabled = true;
-  raw.innerHTML = `<span class="thinking blink">${mock ? "Mock LLM answering" : "Local Qwen model answering on CPU (~30 s)"}<span id="tick"></span></span>`;
-  reh.innerHTML = '<span class="thinking">waiting for the answer&hellip;</span>';
-  const t0 = Date.now();
-  const timer = setInterval(() => {
-    const el = document.getElementById("tick");
-    if (el) el.textContent = " \u00b7 " + Math.round((Date.now()-t0)/1000) + " s";
-  }, 500);
-  try {
-    const r = await fetch("/api/ask", {
-      method: "POST", headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({question: q, note: MASKED, mock})
-    });
-    const d = await r.json();
-    if (d.error) throw new Error(d.error);
-    raw.innerHTML = esc(d.answer).replace(PH_RE, m => `<span class="chip unknown">${m}</span>`)
-      || "<span class='thinking'>(empty answer)</span>";
-    const {html, unknowns} = rehydrateForDisplay(d.answer);
-    reh.innerHTML = html;
-    if (unknowns.length) {
-      warn.style.display = "block";
-      warn.innerHTML = `<b>${unknowns.length} unknown placeholder${unknowns.length>1?"s":""}</b> returned by the LLM (never in the input) &mdash; left untouched because they carry no PHI: <span class="mono" style="font-family:Consolas,monospace">${esc(unknowns.join(" "))}</span>`;
-    }
-  } catch (e) {
-    raw.innerHTML = `<span style="color:#ef4444">Error: ${esc(String(e.message||e))}</span>`;
-    reh.innerHTML = "";
-  } finally {
-    clearInterval(timer); btn.disabled = false;
-  }
+/* ---------- utility ---------- */
+let UT_I=0;
+function renderUtility() {
+  if (!UTIL||UTIL.error) { document.getElementById("ut-kpis").innerHTML='<div class="card">utility_check.json not found.</div>'; return; }
+  document.getElementById("ut-kpis").innerHTML =
+    kpi("ROUGE-L (masked)", UTIL.avg_rouge_l_f1.toFixed(3), "vs original answers")+
+    kpi("ROUGE-L (rehydrated)", UTIL.avg_rouge_l_f1_rehydrated.toFixed(3), "after restore","good")+
+    kpi("Comparisons", UTIL.rows.length, "note × question pairs")+kpi("LLM", "Qwen 0.5B", esc(UTIL.llm));
+  document.getElementById("ut-sel").innerHTML = UTIL.rows.map((r,i)=>`<button class="${i===UT_I?"on":""}" onclick="UT_I=${i};renderUtility()">${r.id} · Q${(i%3)+1}</button>`).join("");
+  const r = UTIL.rows[UT_I];
+  document.getElementById("ut-q").innerHTML = `<b>Question:</b> ${esc(r.question)} &nbsp;<span style="color:var(--muted)">ROUGE-L ${r.rouge_l_f1.toFixed(2)} → ${r.rouge_l_f1_rehydrated.toFixed(2)} · ${r.n_placeholders} placeholders</span>`;
+  const ph = s => esc(s).replace(PH_RE,m=>`<span class="chip" style="background:var(--mrn)">${m}</span>`);
+  document.getElementById("ut-o").innerHTML = esc(r.original_answer);
+  document.getElementById("ut-m").innerHTML = ph(r.masked_answer);
+  document.getElementById("ut-r").innerHTML = esc(r.rehydrated_answer);
 }
 
-function loadExample() { document.getElementById("note").value = EXAMPLE; }
-function clearAll() {
-  document.getElementById("note").value = "";
-  MASKED = null; MAPPING = {};
-  document.getElementById("masked-out").innerHTML =
-    '<span class="thinking">The masked note will appear here&hellip;</span>';
-  document.getElementById("map-body").innerHTML =
-    '<tr><td colspan="3" style="color:var(--muted)">Run step 1 first.</td></tr>';
+/* ---------- about ---------- */
+function renderAbout() {
+  const t=TRAIN, h=t.hyperparams||{};
+  const rows=[["Base model",t.base_model],["Total parameters",(t.total_params||0).toLocaleString()],["Label count (BIO)",t.label_count],
+    ["Training notes (synthetic)",t.train_notes+" ("+t.train_windows+" windows)"],["Dev notes",t.dev_notes],["Dev seqeval F1",(t.dev_seqeval_f1||0).toFixed(4)],
+    ["Epochs",`${h.epochs_completed} of ${h.epochs_planned} planned`],["Batch / LR / max len / stride",`${h.batch} / ${h.lr} / ${h.max_len} / ${h.stride}`],
+    ["Training time",Math.round((t.train_seconds||0)/60)+" min (CPU)"]];
+  document.getElementById("model-card").innerHTML = `<table>${rows.map(r=>`<tr><td style="color:var(--muted);width:260px">${r[0]}</td><td>${esc(r[1])}</td></tr>`).join("")}</table><div class="hint" style="margin-top:12px">${esc(t.note||"")}</div>`;
 }
 
-loadExample(); renderLegend(); loadStatus();
+/* ---------- workspace ---------- */
+function chipHtml(type,n,value,revealed){ const label=revealed&&value?value:`[${type}_${n}]`; return `<span class="chip" style="background:${COLORS[type]||'#64748b'}" title="${type}">${esc(label)}</span>`; }
+function renderMasked(){
+  if(MASKED===null)return; const reveal=document.getElementById("reveal").checked;
+  document.getElementById("masked-out").innerHTML = esc(MASKED).replace(PH_RE,(m,t,n)=>MAPPING[`[${t}_${n}]`]!==undefined?chipHtml(t,n,MAPPING[`[${t}_${n}]`],reveal):`<span class="chip unknown">${m}</span>`);
+}
+function renderLegend(){ document.getElementById("legend").innerHTML=Object.entries(COLORS).map(([t,c])=>`<span class="badge" style="background:${c}">${t}</span>`).join(""); }
+async function deidentify(){
+  const btn=document.getElementById("btn-mask"), text=document.getElementById("note").value; if(!text.trim())return;
+  btn.disabled=true; btn.textContent="Masking…"; MASKED=null; const t0=performance.now();
+  document.getElementById("masked-out").innerHTML='<span class="thinking blink">Running DistilBERT + rules…</span>';
+  try{
+    const d=await (await fetch("/api/deidentify",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})})).json();
+    if(d.error)throw new Error(d.error);
+    MASKED=d.masked; MAPPING=d.mapping;
+    const types={}; Object.keys(MAPPING).forEach(k=>{const t=k.slice(1,k.indexOf("_"));types[t]=(types[t]||0)+1;});
+    document.getElementById("m-count").textContent=d.n_masked; document.getElementById("m-late").textContent=d.late_catches;
+    document.getElementById("m-types").textContent=Object.keys(types).length; document.getElementById("m-ms").textContent=Math.round(performance.now()-t0)+" ms";
+    SESS.notes++; SESS.ids+=d.n_masked; document.getElementById("sess-notes").textContent=SESS.notes; document.getElementById("sess-ids").textContent=SESS.ids;
+    renderMasked(); renderMapping(d.entities); renderDist(types);
+  }catch(e){ document.getElementById("masked-out").innerHTML=`<span class="bad">Error: ${esc(e.message||e)}</span>`; }
+  finally{ btn.disabled=false; btn.innerHTML="&#128274; De-identify"; }
+}
+function renderDist(types){
+  const mx=Math.max(...Object.values(types),1);
+  document.getElementById("type-dist").innerHTML=Object.entries(types).sort((a,b)=>b[1]-a[1]).map(([t,c])=>`<div class="hbar"><span><span class="badge" style="background:${COLORS[t]}">${t}</span></span>${bar(COLORS[t],c/mx)}<span>${c}</span></div>`).join("");
+  animateBars();
+}
+function renderMapping(entities){
+  document.getElementById("map-body").innerHTML=Object.entries(MAPPING).map(([ph,val])=>{
+    const t=ph.slice(1,ph.indexOf("_")), late=(entities||[]).some(e=>e.late&&e.value===val);
+    return `<tr><td><span class="badge" style="background:${COLORS[t]||'#64748b'}">${t}</span>${late?' <span title="caught by safety net" style="color:var(--brand)">&#9889;</span>':''}</td><td class="mono">${ph}</td><td class="mono">${esc(val)}</td></tr>`;}).join("");
+}
+function rehydrateForDisplay(answer){
+  const unknowns=[]; const html=esc(answer).replace(PH_RE,(m,t,n)=>{ if(MAPPING[`[${t}_${n}]`]!==undefined)return chipHtml(t,n,MAPPING[`[${t}_${n}]`],true); unknowns.push(m); return `<span class="chip unknown">${m}</span>`;});
+  return {html,unknowns};
+}
+async function ask(){
+  if(MASKED===null){alert("De-identify a note first (step 1).");return;}
+  const q=document.getElementById("question").value.trim(); if(!q)return;
+  const mock=document.getElementById("mock").checked, btn=document.getElementById("btn-ask");
+  const raw=document.getElementById("ans-raw"), reh=document.getElementById("ans-rehyd"), warn=document.getElementById("unknown-warn");
+  warn.style.display="none"; btn.disabled=true;
+  raw.innerHTML=`<span class="thinking blink">${mock?"Mock LLM answering":"Local Qwen model answering on CPU (~30 s)"}<span id="tick"></span></span>`;
+  reh.innerHTML='<span class="thinking">waiting…</span>';
+  const t0=Date.now(), timer=setInterval(()=>{const el=document.getElementById("tick"); if(el)el.textContent=" · "+Math.round((Date.now()-t0)/1000)+" s";},500);
+  try{
+    const d=await (await fetch("/api/ask",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,note:MASKED,mock})})).json();
+    if(d.error)throw new Error(d.error);
+    raw.innerHTML=esc(d.answer).replace(PH_RE,m=>`<span class="chip unknown">${m}</span>`)||"<span class='thinking'>(empty)</span>";
+    const {html,unknowns}=rehydrateForDisplay(d.answer); reh.innerHTML=html;
+    if(unknowns.length){warn.style.display="block"; warn.innerHTML=`<b>${unknowns.length} unknown placeholder(s)</b> returned by the LLM (never in the input) — left untouched: <span class="mono">${esc(unknowns.join(" "))}</span>`;}
+  }catch(e){ raw.innerHTML=`<span class="bad">Error: ${esc(e.message||e)}</span>`; reh.innerHTML=""; }
+  finally{ clearInterval(timer); btn.disabled=false; }
+}
+function clearAll(){ document.getElementById("note").value=""; MASKED=null; MAPPING={};
+  document.getElementById("masked-out").innerHTML='<span class="thinking">The masked note appears here…</span>';
+  document.getElementById("map-body").innerHTML='<tr><td colspan="3" style="color:var(--muted)">Run step 1 first.</td></tr>';
+  document.getElementById("type-dist").innerHTML='<span class="thinking">No data yet.</span>'; }
+let SAMPLES=[];
+function pickSample(){ const i=document.getElementById("samples").selectedIndex-1; if(i>=0)document.getElementById("note").value=SAMPLES[i].text; }
+
+/* ---------- boot ---------- */
+(async function(){
+  renderLegend();
+  try{ SAMPLES=await (await fetch("/api/samples")).json();
+    document.getElementById("samples").innerHTML='<option>Load sample…</option>'+SAMPLES.map(s=>`<option>${esc(s.name)}</option>`).join("");
+    if(SAMPLES.length){document.getElementById("note").value=SAMPLES[0].text;} }catch(e){}
+  try{ const d=await (await fetch("/api/metrics")).json(); MET=d.systems; TRAIN=d.training; renderOverview(); renderEval(); renderAbout(); }
+  catch(e){ document.getElementById("kpis").innerHTML='<div class="card">Metrics unavailable.</div>'; }
+  try{ UTIL=await (await fetch("/api/utility")).json(); renderUtility(); }catch(e){}
+})();
 </script>
 </body>
 </html>
