@@ -98,6 +98,21 @@
   .qsel button { background:transparent; border:1px solid var(--line); color:var(--muted); border-radius:3px; padding:6px 11px; font-size:12px; cursor:pointer; font-weight:600; }
   .qsel button.on { border-color:var(--ink); background:var(--ink); color:var(--bg); }
   footer { padding:50px 0 60px; margin-top:60px; border-top:1px solid var(--ink); color:var(--muted); font-size:12.5px; }
+
+  /* ---- motion layer (GSAP / React Bits style) ---- */
+  .fx-progress { position:fixed; top:0; left:0; right:0; height:3px; z-index:50; transform:scaleX(0); transform-origin:0 50%; background:linear-gradient(90deg,var(--brand),var(--brand2),var(--warn)); }
+  .hero { position:relative; }
+  .fx-aurora { position:absolute; inset:-60px -40px 0; z-index:-1; pointer-events:none; filter:blur(90px); opacity:.28; overflow:hidden; }
+  .fx-aurora i { position:absolute; width:380px; height:380px; border-radius:50%; }
+  body.dark .fx-aurora { opacity:.4; }
+  .fx-word { display:inline-block; will-change:transform,filter,opacity; }
+  .eyebrow { background:linear-gradient(110deg,var(--brand) 35%,#9db4ff 50%,var(--brand) 65%); background-size:220% 100%; -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; animation:shiny 3s linear infinite; }
+  @keyframes shiny { from { background-position:150% 0; } to { background-position:-50% 0; } }
+  .card { --mx:-999px; --my:-999px; background:radial-gradient(380px circle at var(--mx) var(--my),color-mix(in srgb,var(--brand) 12%,transparent),transparent 45%),var(--panel); transition:border-color .25s; }
+  .card:hover { border-color:color-mix(in srgb,var(--brand) 45%,var(--line)); }
+  .brand i { display:inline-block; animation:slash 2.4s ease-in-out infinite; }
+  @keyframes slash { 50% { transform:rotate(18deg) scale(1.2); } }
+  button.btn { will-change:transform; }
 </style>
 </head>
 <body>
@@ -405,5 +420,8 @@ function pickSample(){ const i=document.getElementById("samples").selectedIndex-
   try{ UTIL=await (await fetch("/api/utility")).json(); renderUtility(); }catch(e){}
 })();
 </script>
+<script src="/static/vendor/gsap.min.js"></script>
+<script src="/static/vendor/ScrollTrigger.min.js"></script>
+<script src="/static/fx.js"></script>
 </body>
 </html>
