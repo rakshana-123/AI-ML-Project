@@ -23,9 +23,16 @@ raw note ──deidentify()──> masked note ──> LLM ──> answer ──
 
 ```bash
 pip install -r requirements.txt
-python demo.py                    # end-to-end in the terminal: mask -> LLM -> restore
-python -m streamlit run app.py    # OR the web preview UI -> http://localhost:8501
+python -m phi_gateway.webui       # the web UI -> http://localhost:8000 (auto-opens)
+python demo.py                    # terminal version: mask -> LLM -> restore
+python -m streamlit run app.py    # simpler Streamlit variant -> http://localhost:8501
 ```
+
+The main web UI (`phi_gateway/webui.py` + `static/index.html`, Flask) shows
+the full flow: paste a note, de-identify (color-coded placeholders per
+identifier type, "reveal values" toggle), browse the private mapping table,
+then ask the LLM and compare the raw (placeholder) answer with the
+rehydrated answer side by side. Unknown placeholders are flagged in-page.
 
 The web preview (`app.py`) shows the full flow interactively: paste a note,
 click **Deidentify** to see the masked text and the private mapping table,

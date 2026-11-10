@@ -9,3 +9,4 @@ accelerate>=0.30
 pandas>=2.0
 requests>=2.31
 streamlit>=1.30
+flask>=3.0
