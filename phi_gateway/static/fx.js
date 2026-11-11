@@ -49,7 +49,7 @@
     gsap.from(words, { y: 46, opacity: 0, filter: "blur(10px)", duration: 0.9,
       stagger: 0.07, ease: "power3.out", delay: 0.15 });
   }
-  gsap.from(".hero .eyebrow, .hero p", { y: 18, opacity: 0, duration: 0.8, stagger: 0.15, delay: 0.6, ease: "power2.out" });
+  gsap.from(".hero .eyebrow, .hero p, .model-pill", { y: 18, opacity: 0, duration: 0.8, stagger: 0.12, delay: 0.55, ease: "power2.out" });
   gsap.from(".hero-stats > div", { y: 30, opacity: 0, duration: 0.8, stagger: 0.12, delay: 0.9, ease: "power3.out" });
   gsap.from(".hero-stats", { clipPath: "inset(0 100% 0 0)", duration: 1.1, delay: 0.8, ease: "power3.inOut" });
   gsap.from("header.topbar .wrap > *", { y: -20, opacity: 0, duration: 0.6, stagger: 0.08, ease: "power2.out" });

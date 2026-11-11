@@ -1,0 +1,4 @@
+/static/*  /:splat  200
+/api/metrics  /data/metrics.json  200
+/api/utility  /data/utility.json  200
+/api/samples  /data/samples.json  200

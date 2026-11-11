@@ -1,18 +1,28 @@
-# Model weights are large; train locally with `python -m phi_gateway.train`
-models/
+# Intermediate training checkpoints / optimizer states
+models/**/runs/
+*.pt
+*.pth
+*.bin
+
 # Caches and build artefacts
 __pycache__/
 *.pyc
 .pycache/
+.pytest_cache/
 *.egg-info/
+.netlify/
+
 # Environment
 .venv/
 venv/
 env/
+
 # Tooling
 .DS_Store
 Thumbs.db
+
 # Not part of the submission
 *.pdf
+
 # HF / presidio caches if run in-repo
 .cache/

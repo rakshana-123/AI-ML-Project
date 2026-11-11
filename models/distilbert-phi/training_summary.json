@@ -1,0 +1,22 @@
+{
+  "base_model": "distilbert-base-cased",
+  "total_params": 65211675,
+  "trainable_params": 65211675,
+  "label_count": 27,
+  "train_notes": 3000,
+  "dev_notes": 300,
+  "train_windows": 3008,
+  "dev_windows": 306,
+  "train_seconds": 6000,
+  "dev_seqeval_f1": 0.9996108444675056,
+  "stopped_after_epochs": 1,
+  "note": "Stopped after epoch 1: dev seqeval strict-IOB2 F1 saturated at 0.9996; epochs 2-3 were projected to add <0.001 for ~3 CPU-hours. Best checkpoint (epoch 1) salvaged from runs/checkpoint-376.",
+  "hyperparams": {
+    "epochs_planned": 3,
+    "epochs_completed": 1,
+    "batch": 8,
+    "lr": 5e-05,
+    "max_len": 384,
+    "stride": 64
+  }
+}

@@ -1,0 +1,22 @@
+[build]
+  publish = "phi_gateway/static"
+
+[[redirects]]
+  from = "/static/*"
+  to = "/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/api/metrics"
+  to = "/data/metrics.json"
+  status = 200
+
+[[redirects]]
+  from = "/api/utility"
+  to = "/data/utility.json"
+  status = 200
+
+[[redirects]]
+  from = "/api/samples"
+  to = "/data/samples.json"
+  status = 200
